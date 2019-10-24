@@ -1,0 +1,52 @@
+<div [ngClass]="{ show: showSide }" class="sidebar left show">
+    <div class="example-container">
+
+        <div>
+            <mat-form-field class="full-width">
+                <input matInput placeholder="Input">
+            </mat-form-field>
+        </div>
+
+        <div>
+            <mat-form-field class="full-width">
+                <textarea matInput placeholder="Textarea"></textarea>
+            </mat-form-field>
+        </div>
+
+        <div>
+            <mat-form-field class="full-width">
+                <mat-select placeholder="Select">
+                    <mat-option value="option">Option</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+    </div>
+</div>
+<mat-card (click)="showSide = true">
+    <p>home works!</p>
+</mat-card>
+<div class="clickShield" *ngIf="showSide" (click)="showSide = false"></div>
+<div [ngClass]="{ show: showSide }" class="sidebar show">
+    <div class="example-container">
+
+        <div>
+            <mat-form-field class="full-width">
+                <input matInput placeholder="Input">
+            </mat-form-field>
+        </div>
+
+        <div>
+            <mat-form-field class="full-width">
+                <textarea matInput placeholder="Textarea"></textarea>
+            </mat-form-field>
+        </div>
+
+        <div>
+            <mat-form-field class="full-width">
+                <mat-select placeholder="Select">
+                    <mat-option value="option">Option</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+    </div>
+</div>

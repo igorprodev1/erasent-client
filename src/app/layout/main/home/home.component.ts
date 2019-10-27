@@ -19,7 +19,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
   marker;
   data;
   selectedNode;
-
+  filterList = ['','','','','','','','','','','','','','']
   constructor(private mainServices: MainService) {
 
   }

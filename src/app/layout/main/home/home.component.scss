@@ -18,20 +18,35 @@
     right: 0;
     top: 0;
     padding: 15px;
-    overflow-y: auto;
     z-index: 1;
     box-shadow: rgba(0, 0, 0, 0.1) -8px 0px 5px -4px;
 
-    &.left{
+    &.left {
         transform: translate(calc(-100% - 10px), 0);
         right: unset;
         left: 0;
         max-width: 250px;
         box-shadow: rgba(0, 0, 0, 0.1) 8px 0px 5px -4px;
     }
+
     &.show {
         transform: translate(0, 0);
         z-index: 111;
     }
 }
 
+.filterbutton {
+    position: absolute;
+    right: -63px;
+    top: 73px;
+    background: white;
+    box-shadow: 0 0 7px -3px #0000008c;
+}
+.filter-list{
+    display: flex;
+    flex-wrap: wrap;
+    &--item{
+        width: 50%;
+        margin-bottom: 10px;
+    }
+}

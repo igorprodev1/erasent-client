@@ -1,6 +1,5 @@
-<div [ngClass]="{ show: showSide }" class="sidebar left show">
+<div [ngClass]="{ show: showFilter }" class="sidebar left show">
     <div class="example-container">
-
         <div>
             <mat-form-field class="full-width">
                 <input matInput placeholder="Input">
@@ -22,31 +21,21 @@
         </div>
     </div>
 </div>
-<mat-card (click)="showSide = true">
-    <p>home works!</p>
+<mat-card>
+    <div class="coco-bpm-graph" id="graph" style="height: calc(100vh - 60px);"></div>
 </mat-card>
 <div class="clickShield" *ngIf="showSide" (click)="showSide = false"></div>
 <div [ngClass]="{ show: showSide }" class="sidebar show">
     <div class="example-container">
 
-        <div>
-            <mat-form-field class="full-width">
-                <input matInput placeholder="Input">
-            </mat-form-field>
-        </div>
-
-        <div>
-            <mat-form-field class="full-width">
-                <textarea matInput placeholder="Textarea"></textarea>
-            </mat-form-field>
-        </div>
-
-        <div>
-            <mat-form-field class="full-width">
-                <mat-select placeholder="Select">
-                    <mat-option value="option">Option</mat-option>
-                </mat-select>
-            </mat-form-field>
+        <div *ngIf="selectedNode">
+            <mat-list>
+                <mat-list-item>SourceId: {{selectedNode.SourceId}}</mat-list-item>
+                <mat-divider></mat-divider>
+                <mat-list-item>SourceIP: {{selectedNode.SourceIP}}</mat-list-item>
+                <mat-divider></mat-divider>
+                <mat-list-item>SourceProdName: {{selectedNode.SourceProdName}}</mat-list-item>
+              </mat-list>
         </div>
     </div>
 </div>

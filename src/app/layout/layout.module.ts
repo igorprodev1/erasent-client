@@ -16,6 +16,8 @@ import {MatSelectModule} from '@angular/material/select';
 import {MatInputModule} from '@angular/material/input';
 import { MainService } from '../shared/services/main.service';
 import { HttpClientModule } from '@angular/common/http';
+import {MatDividerModule} from '@angular/material/divider';
+import {MatListModule} from '@angular/material';
 
 @NgModule({
   declarations: [MainComponent, HomeComponent],
@@ -32,7 +34,9 @@ import { HttpClientModule } from '@angular/common/http';
     MatSidenavModule,
     MatFormFieldModule,
     MatSelectModule,
-    MatInputModule
+    MatInputModule,
+    MatDividerModule,
+    MatListModule
   ],
   providers: [MainService]
 })

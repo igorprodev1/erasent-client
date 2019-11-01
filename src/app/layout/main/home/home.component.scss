@@ -25,7 +25,7 @@
         transform: translate(calc(-100% - 10px), 0);
         right: unset;
         left: 0;
-        max-width: 250px;
+        max-width: 560px;
         box-shadow: rgba(0, 0, 0, 0.1) 8px 0px 5px -4px;
     }
 
@@ -42,11 +42,41 @@
     background: white;
     box-shadow: 0 0 7px -3px #0000008c;
 }
+
+.searchbutton {
+    position: absolute;
+    right: -120px;
+    top: 73px;
+    background: white;
+    box-shadow: 0 0 7px -3px #0000008c;
+}
+
 .filter-list{
     display: flex;
     flex-wrap: wrap;
+    overflow-y: auto;
+    overflow-x: hidden;
+    height: 100%;
+    max-height: calc(100vh - 157px);
     &--item{
         width: 50%;
         margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding-right: 4px;
+        .list-text{
+            overflow: hidden;
+            position: relative;
+            display: inline-block;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        i{
+            cursor: grab;
+            &:active{
+                cursor: grabbing;
+            }
+        }
     }
 }

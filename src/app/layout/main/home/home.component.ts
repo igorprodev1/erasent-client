@@ -11,6 +11,7 @@ declare var d3;
 export class HomeComponent implements OnInit, AfterViewInit {
   showSide;
   showFilter;
+  showSearch;
   zoom;
   zoomTrans;
   conteiner;
@@ -18,8 +19,13 @@ export class HomeComponent implements OnInit, AfterViewInit {
   vis;
   marker;
   data;
+  dataStore;
   selectedNode;
-  filterList = ['', '', '', '', '', '', '', '', '', '', '', '', '', ''];
+  connected = {};
+  filterApplicaton = {};
+  filterPort = {};
+  dataDrow;
+  dataFilter;
 
   constructor(private mainServices: MainService) {
   }
@@ -28,18 +34,67 @@ export class HomeComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this.mainServices.getDataSample().subscribe(data => {
+    this.mainServices.getDataSample().subscribe((data: any[]) => {
       console.log(data);
-      this.data = data;
+      this.dataStore = data.slice();
+      this.data = data.slice();
+      this.filterData();
       this.init();
       this.drow();
     });
   }
 
-  drow() {
-    let self = this;
+  filterData() {
+    this.data.forEach((item) => {
+      if (!this.filterApplicaton[item.SourceProdName || item.TargetProdName]) {
+        this.filterApplicaton[item.SourceProdName || item.TargetProdName] = {
+          count: 0,
+          flag: true,
+          name: item.SourceProdName || item.TargetProdName
+        };
+      }
 
-    let data = {
+      if (!this.filterPort[item.TargetPort]) {
+        this.filterPort[item.TargetPort] = {
+          count: 0,
+          flag: true,
+          name: item.TargetProdName + '(' + item.TargetPort + ')'
+        };
+      }
+
+      this.filterApplicaton[item.SourceProdName || item.TargetProdName].count++;
+      this.filterPort[item.TargetPort].count++;
+    });
+
+    console.log(this.filterApplicaton, this.filterPort);
+  }
+
+  filterChange(e, item) {
+    let data = this.dataStore.slice();
+    Object.keys(this.filterApplicaton).forEach((k) => {
+      if (!this.filterApplicaton[k].flag) {
+        data = data.filter((element) => {
+          return k !== (element.SourceProdName || element.TargetProdName);
+        });
+      }
+    });
+
+    Object.keys(this.filterPort).forEach((k) => {
+      if (!this.filterPort[k].flag) {
+        data = data.filter((element) => {
+          return k !== (element.TargetPort);
+        });
+      }
+    });
+
+    this.dataFilter = data.slice();
+    this.dataFilterSearch();
+  }
+
+  drow() {
+    const self = this;
+
+    this.dataDrow = {
       nodes: this.data,
       links: []
     };
@@ -47,7 +102,11 @@ export class HomeComponent implements OnInit, AfterViewInit {
     this.data.forEach(el => {
       var sKey = el.SourceId + "," + (el.SourceImageName || "?"),
         tKey = el.TargetId + "," + (el.TargetImageName || "?");
-      data.links.push({ "source": sKey, "target": tKey, "value": 1 })
+      this.dataDrow.links.push({ "source": sKey, "target": tKey, "value": 1 });
+      if (!this.connected[sKey]) {
+        this.connected[sKey] = [];
+      };
+      this.connected[sKey].push(tKey);
     });
 
     var simulation = d3.forceSimulation()
@@ -55,19 +114,18 @@ export class HomeComponent implements OnInit, AfterViewInit {
         return d.SourceId + "," + (d.SourceImageName || "?");
       }).distance(100).strength(1))
       .force("charge", d3.forceManyBody())
-      .force("center", d3.forceCenter(window.innerWidth / 2, window.innerHeight / 2))
-      ;
-
+      .force('collide', d3.forceCollide(function (d) { return 30; }))
+      .force("center", d3.forceCenter(window.innerWidth / 2, window.innerHeight / 2));
     var link = this.conteiner.append("g")
       .attr("class", "links")
       .selectAll("polyline")
-      .data(data.links)
+      .data(this.dataDrow.links)
       .enter().append("polyline");
 
     var node = this.conteiner.append("g")
       .attr("class", "nodes")
       .selectAll("g")
-      .data(data.nodes)
+      .data(this.dataDrow.nodes)
       .enter().append("g");
 
     let g = node.append("g");
@@ -81,54 +139,13 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
     function nodeOut() {
       d3.selectAll("circle").style("opacity", 1).style("stroke", "#b6fdba").style("stroke-width", 2 + "px");
-      d3.selectAll("line").style("opacity", 1).style("stroke-width", 2 + "px");
+      d3.selectAll("polyline").style("opacity", 1).style("stroke-width", 2 + "px");
       d3.selectAll("text").style("opacity", 1).style("fill", "black");
+      self.dataFilterSearch();
     }
 
     function nodeOver(d, i, e) {
-      highlightNeighbors(d, i);
-    }
-
-    function highlightNeighbors(d, i) {
-      var nodeNeighbors = findNeighbors(d, i);
-      d3.selectAll("circle").each(function (p) {
-        var isNeighbor = nodeNeighbors.nodes.indexOf(p);
-        d3.select(this)
-          .style("opacity", isNeighbor > -1 ? 1 : .25)
-          .style("stroke", isNeighbor > -1 ? "yellow" : "#b6fdba");
-      });
-
-      d3.selectAll("line")
-        .style("stroke-width", function (d) {
-          return nodeNeighbors.links.indexOf(d) > -1 ? 2.25 : 2;
-        })
-        .style("opacity", function (d) {
-          return nodeNeighbors.links.indexOf(d) > -1 ? 1 : .25;
-        });
-
-      d3.selectAll("text")
-        .style("opacity", function (d) {
-          return nodeNeighbors.nodes.indexOf(d) > -1 ? 1 : 0
-        })
-        .style("fill", function (n) {
-          return n === d ? "blue" : "black";
-        });
-    }
-
-    function findNeighbors(d, i) {
-      let neighborArray = [d];
-      var linkArray = [];
-      data.links.forEach((p) => {
-        if (p.source === d || p.target === d) {
-          neighborArray.indexOf(p.source) == -1 ? neighborArray.push(p.source) : null;
-          neighborArray.indexOf(p.target) == -1 ? neighborArray.push(p.target) : null;
-          linkArray.push(p);
-        }
-      });
-      return {
-        nodes: neighborArray,
-        links: linkArray
-      };
+      self.highlightNeighbors(d, i);
     }
 
     function nodeClick(d, i, e) {
@@ -147,34 +164,11 @@ export class HomeComponent implements OnInit, AfterViewInit {
       .text(function (d) { return d.SourceId + "," + (d.SourceImageName || "?"); });
 
     simulation
-      .nodes(data.nodes)
+      .nodes(this.dataDrow.nodes)
       .on("tick", ticked);
 
     simulation.force("link")
-      .links(data.links);
-
-      // setInterval(() => {
-      //   console.log(2, d3.selectAll("circle"))
-      //   d3.selectAll("circle").each(function(d, i) {
-      //     console.log(d, i)
-			// 		if(i % 2 == 0) {
-			// 			d.x = d.x;
-			// 			d.y = d.y;
-			// 		} else {
-			// 			var b = 10;
-
-			// 			var diffX = d.x;
-			// 			var diffY = d.y;
-
-			// 			var dist = Math.sqrt(diffX * diffX + diffY * diffY);
-
-			// 			var shiftX = b * (diffX - dist) / (dist * 2);
-			// 			shiftX = Math.max(-b, Math.min(0, shiftX));
-			// 			var shiftY = 5;
-			// 			this.childNodes[1].setAttribute("transform", "translate(" + shiftX + "," + shiftY + ")");
-			// 		}
-			// 	});
-      // }, 1000)
+      .links(this.dataDrow.links);
 
     function ticked() {
       link.attr("points", function (d) {
@@ -202,6 +196,70 @@ export class HomeComponent implements OnInit, AfterViewInit {
           return "translate(" + d.x + "," + d.y + ")";
         });
     }
+  }
+
+  dataFilterSearch() {
+    if (this.dataFilter)
+      this.dataFilter.forEach(element => {
+        let self = this;
+        d3.selectAll("circle").each(function (p) {
+          var isNeighbor = self.dataFilter.indexOf(p);
+          d3.select(this)
+            .style("opacity", isNeighbor > -1 ? 1 : .25);
+        });
+
+        d3.selectAll("polyline")
+          .style("opacity", function (d) {
+            return self.dataFilter.indexOf(d.source) > -1 ? 1 : .25;
+          });
+
+        d3.selectAll("text")
+          .style("opacity", function (d) {
+            return self.dataFilter.indexOf(d) > -1 ? 1 : 0;
+          });
+      });
+  }
+
+  highlightNeighbors(d, i) {
+    var nodeNeighbors = this.findNeighbors(d, i);
+    d3.selectAll("circle").each(function (p) {
+      var isNeighbor = nodeNeighbors.nodes.indexOf(p);
+      d3.select(this)
+        .style("opacity", isNeighbor > -1 ? 1 : .25)
+        .style("stroke", isNeighbor > -1 ? "yellow" : "#b6fdba");
+    });
+
+    d3.selectAll("polyline")
+      .style("stroke-width", function (d) {
+        return nodeNeighbors.links.indexOf(d) > -1 ? 3 : 2;
+      })
+      .style("opacity", function (d) {
+        return nodeNeighbors.links.indexOf(d) > -1 ? 1 : .25;
+      });
+
+    d3.selectAll("text")
+      .style("opacity", function (d) {
+        return nodeNeighbors.nodes.indexOf(d) > -1 ? 1 : 0;
+      })
+      .style("fill", function (n) {
+        return n === d ? "blue" : "black";
+      });
+  }
+
+  findNeighbors(d, i) {
+    let neighborArray = [d];
+    var linkArray = [];
+    this.dataDrow.links.forEach((p) => {
+      if (p.source === d || p.target === d) {
+        neighborArray.indexOf(p.source) == -1 ? neighborArray.push(p.source) : null;
+        neighborArray.indexOf(p.target) == -1 ? neighborArray.push(p.target) : null;
+        linkArray.push(p);
+      }
+    });
+    return {
+      nodes: neighborArray,
+      links: linkArray
+    };
   }
 
   init() {
@@ -294,6 +352,12 @@ export class HomeComponent implements OnInit, AfterViewInit {
       .attr("class", "path")
       .attr("d", "M 0 0 6 3 0 6 3 3")
       .style("fill", "#999");
+  }
+
+  removeAll() {
+    d3.selectAll("line").remove();
+    d3.selectAll("polyline").remove();
+    d3.selectAll(".path").remove();
   }
 
   rangeWidth(flag?) {

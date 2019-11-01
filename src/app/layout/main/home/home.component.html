@@ -1,15 +1,50 @@
-<div [ngClass]="{ show: showFilter }" class="sidebar left show">
-    <div class="example-container">
-        <h2>Filter Data</h2>
+<div [ngClass]="{ show: showFilter || showSearch }" class="sidebar left show">
+    <div *ngIf="showFilter" class="example-container">
+        <h2>Filter</h2>
+        <h3>APPLICATION PROCESSES:</h3>
         <div class="filter-list">
-            <div class="filter-list--item" *ngFor="let item of filterList; let i = index">
-                <mat-checkbox>Filter {{i + 1}}</mat-checkbox>
+            <div class="filter-list--item" 
+            *ngFor="let item of filterApplicaton | keyvalue; let i = index"
+            [hidden]="!item.key">
+                <mat-checkbox [(ngModel)]="item.value.flag" (ngModelChange)="filterChange($event, item)">
+                    {{item.value.count}} {{item.value.name}}
+                </mat-checkbox>
+            </div>
+        </div>
+        <h3>CONNECTION PORT:</h3>
+        <div class="filter-list">
+                <div class="filter-list--item" 
+            *ngFor="let item of filterPort | keyvalue; let i = index"
+            [hidden]="!item.key">
+                <mat-checkbox [(ngModel)]="item.value.flag" (ngModelChange)="filterChange($event, item)">
+                    {{item.value.count}} {{item.value.name}}
+                </mat-checkbox>
             </div>
         </div>
     </div>
-    <button mat-icon-button class="filterbutton" (click)="showFilter = !showFilter">
+    <div *ngIf="showSearch" class="example-container">
+            <h2>APPLICATION</h2>
+            <mat-form-field class="example-full-width">
+                <input matInput placeholder="Search">
+            </mat-form-field>
+            <div class="filter-list">
+                <div class="filter-list--item" 
+                *ngFor="let item of data; let i = index">
+                    <span class="list-text" [title]="item.SourceId + ',' + (item.SourceImageName || '?')">{{item.SourceId + ',' + (item.SourceImageName || '?')}}</span>
+                    <i class="material-icons">
+                        my_location
+                    </i>
+                </div>
+            </div>
+    </div>
+    <button mat-icon-button class="filterbutton" (click)="showFilter = !showFilter; showSearch = false;">
         <i class="material-icons">
             filter_list
+        </i>
+    </button>
+    <button mat-icon-button class="searchbutton" (click)="showSearch = !showSearch; showFilter = false;">
+        <i class="material-icons">
+            search
         </i>
     </button>
 </div>
@@ -21,14 +56,16 @@
 <div class="clickShield" *ngIf="showSide" (click)="showSide = false"></div>
 <div [ngClass]="{ show: showSide }" class="sidebar show">
     <div class="example-container">
-
         <div *ngIf="selectedNode">
             <mat-list>
-                <mat-list-item>SourceId: {{selectedNode.SourceId}}</mat-list-item>
+                <mat-list-item>Application name: {{selectedNode.SourceId + ',' + (selectedNode.SourceImageName || '?')}}</mat-list-item>
                 <mat-divider></mat-divider>
-                <mat-list-item>SourceIP: {{selectedNode.SourceIP}}</mat-list-item>
+                <mat-list-item>Publisher: {{selectedNode.SourceMfgName}}</mat-list-item>
                 <mat-divider></mat-divider>
-                <mat-list-item>SourceProdName: {{selectedNode.SourceProdName}}</mat-list-item>
+                <mat-list-item>Server name: {{selectedNode.SourceHostname}}</mat-list-item>
+                <mat-divider></mat-divider>
+                <mat-list-item>Connected:</mat-list-item>
+                <mat-list-item *ngFor="let item of connected[selectedNode.SourceId + ',' + (selectedNode.SourceImageName || '?')]">{{item}}</mat-list-item>
             </mat-list>
         </div>
     </div>

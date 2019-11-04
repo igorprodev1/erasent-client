@@ -22,10 +22,12 @@ export class HomeComponent implements OnInit, AfterViewInit {
   dataStore;
   selectedNode;
   connected = {};
+  depended = {};
   filterApplicaton = {};
   filterPort = {};
   dataDrow;
   dataFilter;
+  searchModel = "";
 
   constructor(private mainServices: MainService) {
   }
@@ -38,43 +40,43 @@ export class HomeComponent implements OnInit, AfterViewInit {
       console.log(data);
       this.dataStore = data.slice();
       this.data = data.slice();
-      this.filterData();
       this.init();
       this.drow();
     });
   }
 
   filterData() {
-    this.data.forEach((item) => {
-      if (!this.filterApplicaton[item.SourceProdName || item.TargetProdName]) {
-        this.filterApplicaton[item.SourceProdName || item.TargetProdName] = {
+    this.dataDrow.nodes.forEach((item) => {
+      if (!this.filterApplicaton[item.id]) {
+        this.filterApplicaton[item.id] = {
           count: 0,
           flag: true,
-          name: item.SourceProdName || item.TargetProdName
+          name: item.id
         };
       }
 
-      if (!this.filterPort[item.TargetPort]) {
-        this.filterPort[item.TargetPort] = {
+      if (!this.filterPort[item.port]) {
+        this.filterPort[item.port] = {
           count: 0,
           flag: true,
-          name: item.TargetProdName + '(' + item.TargetPort + ')'
+          name: item.port
         };
       }
 
-      this.filterApplicaton[item.SourceProdName || item.TargetProdName].count++;
-      this.filterPort[item.TargetPort].count++;
+      this.filterApplicaton[item.id].count++;
+      this.filterPort[item.port].count++;
     });
 
     console.log(this.filterApplicaton, this.filterPort);
   }
 
   filterChange(e, item) {
-    let data = this.dataStore.slice();
+    let data = this.dataDrow.nodes.slice();
+    console.log(data)
     Object.keys(this.filterApplicaton).forEach((k) => {
       if (!this.filterApplicaton[k].flag) {
         data = data.filter((element) => {
-          return k !== (element.SourceProdName || element.TargetProdName);
+          return k !== element.id;
         });
       }
     });
@@ -82,7 +84,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
     Object.keys(this.filterPort).forEach((k) => {
       if (!this.filterPort[k].flag) {
         data = data.filter((element) => {
-          return k !== (element.TargetPort);
+          return k !== element.port;
         });
       }
     });
@@ -95,23 +97,66 @@ export class HomeComponent implements OnInit, AfterViewInit {
     const self = this;
 
     this.dataDrow = {
-      nodes: this.data,
+      nodes: [],
       links: []
     };
 
-    this.data.forEach(el => {
+    let nodes = {};
+    let links = [];
+
+    this.data.forEach((el) => {
+      let l: any = {};
+      links.push(l);
+
       var sKey = el.SourceId + "," + (el.SourceImageName || "?"),
         tKey = el.TargetId + "," + (el.TargetImageName || "?");
-      this.dataDrow.links.push({ "source": sKey, "target": tKey, "value": 1 });
+      l.source =
+        nodes[sKey] ||
+        (nodes[sKey] = {
+          id: sKey,
+          serverId: el.SourceId,
+          name: el.SourceImageName,
+          ip: el.SourceIPAddress,
+          appName: el.SourceProdName,
+          publisher: el.SourceMfgName,
+          serverHostname: el.ServerHostname,
+          port: el.SourcePort || el.TargetPort,
+          linkCount: 0
+        });
+      l.source.linkCount++;
+      l.target =
+        nodes[tKey] ||
+        (nodes[tKey] = {
+          id: tKey,
+          serverId: el.TargetId,
+          name: el.TargetImageName,
+          ip: el.TargetIPAddress,
+          appName: el.TargetProdName,
+          publisher: el.TargetMfgName,
+          serverHostname: el.TargetHostname,
+          port: el.TargetPort || el.SourcePort,
+          linkCount: 0
+        });
+      l.target.linkCount++;
+
       if (!this.connected[sKey]) {
         this.connected[sKey] = [];
-      };
-      this.connected[sKey].push(tKey);
+      }
+      this.connected[sKey].push(el.TargetProdName + ' (on ' + el.TargetHostname + ':' + el.TargetPort + ')');
+
+      if (!this.depended[tKey]) {
+        this.depended[tKey] = [];
+      }
+      this.depended[tKey].push(el.SourceProdName +  (el.ServerHostname ? (' (on ' + el.ServerHostname + ':' + el.SourcePort + ')') : ''));
     });
+
+    this.dataDrow = { nodes: d3.values(nodes), links };
+    this.dataFilter = this.dataDrow.nodes.slice();
+    this.filterData();
 
     var simulation = d3.forceSimulation()
       .force("link", d3.forceLink().id(function (d) {
-        return d.SourceId + "," + (d.SourceImageName || "?");
+        return d.id;
       }).distance(100).strength(1))
       .force("charge", d3.forceManyBody())
       .force('collide', d3.forceCollide(function (d) { return 30; }))
@@ -145,7 +190,10 @@ export class HomeComponent implements OnInit, AfterViewInit {
     }
 
     function nodeOver(d, i, e) {
-      self.highlightNeighbors(d, i);
+      if (self.dataFilter.indexOf(d) > -1) {
+        self.highlightNeighbors(d, i);
+        self.dataFilterSearch();
+      }
     }
 
     function nodeClick(d, i, e) {
@@ -155,13 +203,13 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
     node.append("text")
       .text(function (d) {
-        return d.SourceId + "," + (d.SourceImageName || "?");
+        return d.id;
       })
       .attr('x', 6)
       .attr('y', 3);
 
     node.append("title")
-      .text(function (d) { return d.SourceId + "," + (d.SourceImageName || "?"); });
+      .text(function (d) { return d.id; });
 
     simulation
       .nodes(this.dataDrow.nodes)
@@ -199,7 +247,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
   }
 
   dataFilterSearch() {
-    if (this.dataFilter)
+    if (this.dataFilter) {
       this.dataFilter.forEach(element => {
         let self = this;
         d3.selectAll("circle").each(function (p) {
@@ -210,7 +258,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
         d3.selectAll("polyline")
           .style("opacity", function (d) {
-            return self.dataFilter.indexOf(d.source) > -1 ? 1 : .25;
+            return (self.dataFilter.indexOf(d.target) > -1 && self.dataFilter.indexOf(d.source) > -1) ? 1 : .25;
           });
 
         d3.selectAll("text")
@@ -218,6 +266,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
             return self.dataFilter.indexOf(d) > -1 ? 1 : 0;
           });
       });
+    }
   }
 
   highlightNeighbors(d, i) {

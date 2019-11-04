@@ -41,7 +41,7 @@ module.exports = "<router-outlet></router-outlet>"
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div [ngClass]=\"{ show: showFilter }\" class=\"sidebar left show\">\r\n    <div class=\"example-container\">\r\n        <h2>Filter Data</h2>\r\n        <div class=\"filter-list\">\r\n            <div class=\"filter-list--item\" *ngFor=\"let item of filterList; let i = index\">\r\n                <mat-checkbox>Filter {{i + 1}}</mat-checkbox>\r\n            </div>\r\n        </div>\r\n    </div>\r\n    <button mat-icon-button class=\"filterbutton\" (click)=\"showFilter = !showFilter\">\r\n        <i class=\"material-icons\">\r\n            filter_list\r\n        </i>\r\n    </button>\r\n</div>\r\n\r\n<mat-card>\r\n    <div class=\"coco-bpm-graph\" id=\"graph\" style=\"height: calc(100vh - 96px);\"></div>\r\n</mat-card>\r\n\r\n<div class=\"clickShield\" *ngIf=\"showSide\" (click)=\"showSide = false\"></div>\r\n<div [ngClass]=\"{ show: showSide }\" class=\"sidebar show\">\r\n    <div class=\"example-container\">\r\n\r\n        <div *ngIf=\"selectedNode\">\r\n            <mat-list>\r\n                <mat-list-item>Application name: {{selectedNode.SourceId + ',' + (selectedNode.SourceImageName || '?')}}</mat-list-item>\r\n                <mat-divider></mat-divider>\r\n                <mat-list-item>Publisher: {{selectedNode.SourceMfgName}}</mat-list-item>\r\n                <mat-divider></mat-divider>\r\n                <mat-list-item>Server name: {{selectedNode.SourceHostname}}</mat-list-item>\r\n                <mat-divider></mat-divider>\r\n                <mat-list-item>Connected:</mat-list-item>\r\n                <mat-list-item *ngFor=\"let item of connected[selectedNode.SourceId + ',' + (selectedNode.SourceImageName || '?')]\">{{item}}</mat-list-item>\r\n            </mat-list>\r\n        </div>\r\n    </div>\r\n</div>"
+module.exports = "<div [ngClass]=\"{ show: showFilter || showSearch }\" class=\"sidebar left show\">\r\n    <div *ngIf=\"showFilter\" class=\"example-container\">\r\n        <h2>Filter</h2>\r\n        <h3>APPLICATION PROCESSES:</h3>\r\n        <div class=\"filter-list\">\r\n            <div class=\"filter-list--item\" \r\n            *ngFor=\"let item of filterApplicaton | keyvalue; let i = index\"\r\n            [hidden]=\"!item.key\">\r\n                <mat-checkbox [(ngModel)]=\"item.value.flag\" (ngModelChange)=\"filterChange($event, item)\">\r\n                    {{item.value.count}} {{item.value.name}}\r\n                </mat-checkbox>\r\n            </div>\r\n        </div>\r\n        <h3>CONNECTION PORT:</h3>\r\n        <div class=\"filter-list\">\r\n                <div class=\"filter-list--item\" \r\n            *ngFor=\"let item of filterPort | keyvalue; let i = index\"\r\n            [hidden]=\"!item.key\">\r\n                <mat-checkbox [(ngModel)]=\"item.value.flag\" (ngModelChange)=\"filterChange($event, item)\">\r\n                    {{item.value.count}} {{item.value.name}}\r\n                </mat-checkbox>\r\n            </div>\r\n        </div>\r\n    </div>\r\n    <div *ngIf=\"showSearch\" class=\"example-container\">\r\n            <h2>APPLICATION</h2>\r\n            <mat-form-field class=\"example-full-width\">\r\n                <input matInput placeholder=\"Search\">\r\n            </mat-form-field>\r\n            <div class=\"filter-list\">\r\n                <div class=\"filter-list--item\" \r\n                *ngFor=\"let item of data; let i = index\">\r\n                    <span class=\"list-text\" [title]=\"item.SourceId + ',' + (item.SourceImageName || '?')\">{{item.SourceId + ',' + (item.SourceImageName || '?')}}</span>\r\n                    <i class=\"material-icons\">\r\n                        my_location\r\n                    </i>\r\n                </div>\r\n            </div>\r\n    </div>\r\n    <button mat-icon-button class=\"filterbutton\" (click)=\"showFilter = !showFilter; showSearch = false;\">\r\n        <i class=\"material-icons\">\r\n            filter_list\r\n        </i>\r\n    </button>\r\n    <button mat-icon-button class=\"searchbutton\" (click)=\"showSearch = !showSearch; showFilter = false;\">\r\n        <i class=\"material-icons\">\r\n            search\r\n        </i>\r\n    </button>\r\n</div>\r\n\r\n<mat-card>\r\n    <div class=\"coco-bpm-graph\" id=\"graph\" style=\"height: calc(100vh - 96px);\"></div>\r\n</mat-card>\r\n\r\n<div class=\"clickShield\" *ngIf=\"showSide\" (click)=\"showSide = false\"></div>\r\n<div [ngClass]=\"{ show: showSide }\" class=\"sidebar show\">\r\n    <div class=\"example-container\">\r\n        <div *ngIf=\"selectedNode\">\r\n            <mat-list>\r\n                <mat-list-item>Application name: {{selectedNode.SourceId + ',' + (selectedNode.SourceImageName || '?')}}</mat-list-item>\r\n                <mat-divider></mat-divider>\r\n                <mat-list-item>Publisher: {{selectedNode.SourceMfgName}}</mat-list-item>\r\n                <mat-divider></mat-divider>\r\n                <mat-list-item>Server name: {{selectedNode.SourceHostname}}</mat-list-item>\r\n                <mat-divider></mat-divider>\r\n                <mat-list-item>Connected:</mat-list-item>\r\n                <mat-list-item *ngFor=\"let item of connected[selectedNode.SourceId + ',' + (selectedNode.SourceImageName || '?')]\">{{item}}</mat-list-item>\r\n            </mat-list>\r\n        </div>\r\n    </div>\r\n</div>"
 
 /***/ }),
 
@@ -310,7 +310,7 @@ LayoutModule = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = ".clickShield {\n  position: fixed;\n  background: #0000003d;\n  width: 100%;\n  height: 100%;\n  top: 0;\n  z-index: 1;\n}\n\n.sidebar {\n  position: absolute;\n  width: 100%;\n  max-width: 400px;\n  background-color: white;\n  -webkit-transform: translate(calc(100% + 10px), 0);\n          transform: translate(calc(100% + 10px), 0);\n  -webkit-transition: all 0.4s;\n  transition: all 0.4s;\n  height: 100%;\n  right: 0;\n  top: 0;\n  padding: 15px;\n  z-index: 1;\n  box-shadow: rgba(0, 0, 0, 0.1) -8px 0px 5px -4px;\n}\n\n.sidebar.left {\n  -webkit-transform: translate(calc(-100% - 10px), 0);\n          transform: translate(calc(-100% - 10px), 0);\n  right: unset;\n  left: 0;\n  max-width: 250px;\n  box-shadow: rgba(0, 0, 0, 0.1) 8px 0px 5px -4px;\n}\n\n.sidebar.show {\n  -webkit-transform: translate(0, 0);\n          transform: translate(0, 0);\n  z-index: 111;\n}\n\n.filterbutton {\n  position: absolute;\n  right: -63px;\n  top: 73px;\n  background: white;\n  box-shadow: 0 0 7px -3px #0000008c;\n}\n\n.filter-list {\n  display: -webkit-box;\n  display: flex;\n  flex-wrap: wrap;\n}\n\n.filter-list--item {\n  width: 50%;\n  margin-bottom: 10px;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvbGF5b3V0L21haW4vaG9tZS9DOlxcVXNlcnNcXFVzZXJcXERvY3VtZW50c1xcZXJhc2VudC1jbGllbnQvc3JjXFxhcHBcXGxheW91dFxcbWFpblxcaG9tZVxcaG9tZS5jb21wb25lbnQuc2NzcyIsInNyYy9hcHAvbGF5b3V0L21haW4vaG9tZS9ob21lLmNvbXBvbmVudC5zY3NzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBO0VBQ0ksZUFBQTtFQUNBLHFCQUFBO0VBQ0EsV0FBQTtFQUNBLFlBQUE7RUFDQSxNQUFBO0VBQ0EsVUFBQTtBQ0NKOztBREVBO0VBQ0ksa0JBQUE7RUFDQSxXQUFBO0VBQ0EsZ0JBQUE7RUFDQSx1QkFBQTtFQUNBLGtEQUFBO1VBQUEsMENBQUE7RUFDQSw0QkFBQTtFQUFBLG9CQUFBO0VBQ0EsWUFBQTtFQUNBLFFBQUE7RUFDQSxNQUFBO0VBQ0EsYUFBQTtFQUNBLFVBQUE7RUFDQSxnREFBQTtBQ0NKOztBRENJO0VBQ0ksbURBQUE7VUFBQSwyQ0FBQTtFQUNBLFlBQUE7RUFDQSxPQUFBO0VBQ0EsZ0JBQUE7RUFDQSwrQ0FBQTtBQ0NSOztBREVJO0VBQ0ksa0NBQUE7VUFBQSwwQkFBQTtFQUNBLFlBQUE7QUNBUjs7QURJQTtFQUNJLGtCQUFBO0VBQ0EsWUFBQTtFQUNBLFNBQUE7RUFDQSxpQkFBQTtFQUNBLGtDQUFBO0FDREo7O0FER0E7RUFDSSxvQkFBQTtFQUFBLGFBQUE7RUFDQSxlQUFBO0FDQUo7O0FEQ0k7RUFDSSxVQUFBO0VBQ0EsbUJBQUE7QUNDUiIsImZpbGUiOiJzcmMvYXBwL2xheW91dC9tYWluL2hvbWUvaG9tZS5jb21wb25lbnQuc2NzcyIsInNvdXJjZXNDb250ZW50IjpbIi5jbGlja1NoaWVsZCB7XHJcbiAgICBwb3NpdGlvbjogZml4ZWQ7XHJcbiAgICBiYWNrZ3JvdW5kOiAjMDAwMDAwM2Q7XHJcbiAgICB3aWR0aDogMTAwJTtcclxuICAgIGhlaWdodDogMTAwJTtcclxuICAgIHRvcDogMDtcclxuICAgIHotaW5kZXg6IDE7XHJcbn1cclxuXHJcbi5zaWRlYmFyIHtcclxuICAgIHBvc2l0aW9uOiBhYnNvbHV0ZTtcclxuICAgIHdpZHRoOiAxMDAlO1xyXG4gICAgbWF4LXdpZHRoOiA0MDBweDtcclxuICAgIGJhY2tncm91bmQtY29sb3I6IHdoaXRlO1xyXG4gICAgdHJhbnNmb3JtOiB0cmFuc2xhdGUoY2FsYygxMDAlICsgMTBweCksIDApO1xyXG4gICAgdHJhbnNpdGlvbjogYWxsIDAuNHM7XHJcbiAgICBoZWlnaHQ6IDEwMCU7XHJcbiAgICByaWdodDogMDtcclxuICAgIHRvcDogMDtcclxuICAgIHBhZGRpbmc6IDE1cHg7XHJcbiAgICB6LWluZGV4OiAxO1xyXG4gICAgYm94LXNoYWRvdzogcmdiYSgwLCAwLCAwLCAwLjEpIC04cHggMHB4IDVweCAtNHB4O1xyXG5cclxuICAgICYubGVmdCB7XHJcbiAgICAgICAgdHJhbnNmb3JtOiB0cmFuc2xhdGUoY2FsYygtMTAwJSAtIDEwcHgpLCAwKTtcclxuICAgICAgICByaWdodDogdW5zZXQ7XHJcbiAgICAgICAgbGVmdDogMDtcclxuICAgICAgICBtYXgtd2lkdGg6IDI1MHB4O1xyXG4gICAgICAgIGJveC1zaGFkb3c6IHJnYmEoMCwgMCwgMCwgMC4xKSA4cHggMHB4IDVweCAtNHB4O1xyXG4gICAgfVxyXG5cclxuICAgICYuc2hvdyB7XHJcbiAgICAgICAgdHJhbnNmb3JtOiB0cmFuc2xhdGUoMCwgMCk7XHJcbiAgICAgICAgei1pbmRleDogMTExO1xyXG4gICAgfVxyXG59XHJcblxyXG4uZmlsdGVyYnV0dG9uIHtcclxuICAgIHBvc2l0aW9uOiBhYnNvbHV0ZTtcclxuICAgIHJpZ2h0OiAtNjNweDtcclxuICAgIHRvcDogNzNweDtcclxuICAgIGJhY2tncm91bmQ6IHdoaXRlO1xyXG4gICAgYm94LXNoYWRvdzogMCAwIDdweCAtM3B4ICMwMDAwMDA4YztcclxufVxyXG4uZmlsdGVyLWxpc3R7XHJcbiAgICBkaXNwbGF5OiBmbGV4O1xyXG4gICAgZmxleC13cmFwOiB3cmFwO1xyXG4gICAgJi0taXRlbXtcclxuICAgICAgICB3aWR0aDogNTAlO1xyXG4gICAgICAgIG1hcmdpbi1ib3R0b206IDEwcHg7XHJcbiAgICB9XHJcbn0iLCIuY2xpY2tTaGllbGQge1xuICBwb3NpdGlvbjogZml4ZWQ7XG4gIGJhY2tncm91bmQ6ICMwMDAwMDAzZDtcbiAgd2lkdGg6IDEwMCU7XG4gIGhlaWdodDogMTAwJTtcbiAgdG9wOiAwO1xuICB6LWluZGV4OiAxO1xufVxuXG4uc2lkZWJhciB7XG4gIHBvc2l0aW9uOiBhYnNvbHV0ZTtcbiAgd2lkdGg6IDEwMCU7XG4gIG1heC13aWR0aDogNDAwcHg7XG4gIGJhY2tncm91bmQtY29sb3I6IHdoaXRlO1xuICB0cmFuc2Zvcm06IHRyYW5zbGF0ZShjYWxjKDEwMCUgKyAxMHB4KSwgMCk7XG4gIHRyYW5zaXRpb246IGFsbCAwLjRzO1xuICBoZWlnaHQ6IDEwMCU7XG4gIHJpZ2h0OiAwO1xuICB0b3A6IDA7XG4gIHBhZGRpbmc6IDE1cHg7XG4gIHotaW5kZXg6IDE7XG4gIGJveC1zaGFkb3c6IHJnYmEoMCwgMCwgMCwgMC4xKSAtOHB4IDBweCA1cHggLTRweDtcbn1cbi5zaWRlYmFyLmxlZnQge1xuICB0cmFuc2Zvcm06IHRyYW5zbGF0ZShjYWxjKC0xMDAlIC0gMTBweCksIDApO1xuICByaWdodDogdW5zZXQ7XG4gIGxlZnQ6IDA7XG4gIG1heC13aWR0aDogMjUwcHg7XG4gIGJveC1zaGFkb3c6IHJnYmEoMCwgMCwgMCwgMC4xKSA4cHggMHB4IDVweCAtNHB4O1xufVxuLnNpZGViYXIuc2hvdyB7XG4gIHRyYW5zZm9ybTogdHJhbnNsYXRlKDAsIDApO1xuICB6LWluZGV4OiAxMTE7XG59XG5cbi5maWx0ZXJidXR0b24ge1xuICBwb3NpdGlvbjogYWJzb2x1dGU7XG4gIHJpZ2h0OiAtNjNweDtcbiAgdG9wOiA3M3B4O1xuICBiYWNrZ3JvdW5kOiB3aGl0ZTtcbiAgYm94LXNoYWRvdzogMCAwIDdweCAtM3B4ICMwMDAwMDA4Yztcbn1cblxuLmZpbHRlci1saXN0IHtcbiAgZGlzcGxheTogZmxleDtcbiAgZmxleC13cmFwOiB3cmFwO1xufVxuLmZpbHRlci1saXN0LS1pdGVtIHtcbiAgd2lkdGg6IDUwJTtcbiAgbWFyZ2luLWJvdHRvbTogMTBweDtcbn0iXX0= */"
+module.exports = ".clickShield {\n  position: fixed;\n  background: #0000003d;\n  width: 100%;\n  height: 100%;\n  top: 0;\n  z-index: 1;\n}\n\n.sidebar {\n  position: absolute;\n  width: 100%;\n  max-width: 400px;\n  background-color: white;\n  -webkit-transform: translate(calc(100% + 10px), 0);\n          transform: translate(calc(100% + 10px), 0);\n  -webkit-transition: all 0.4s;\n  transition: all 0.4s;\n  height: 100%;\n  right: 0;\n  top: 0;\n  padding: 15px;\n  z-index: 1;\n  box-shadow: rgba(0, 0, 0, 0.1) -8px 0px 5px -4px;\n}\n\n.sidebar.left {\n  -webkit-transform: translate(calc(-100% - 10px), 0);\n          transform: translate(calc(-100% - 10px), 0);\n  right: unset;\n  left: 0;\n  max-width: 560px;\n  box-shadow: rgba(0, 0, 0, 0.1) 8px 0px 5px -4px;\n}\n\n.sidebar.show {\n  -webkit-transform: translate(0, 0);\n          transform: translate(0, 0);\n  z-index: 111;\n}\n\n.filterbutton {\n  position: absolute;\n  right: -63px;\n  top: 73px;\n  background: white;\n  box-shadow: 0 0 7px -3px #0000008c;\n}\n\n.searchbutton {\n  position: absolute;\n  right: -120px;\n  top: 73px;\n  background: white;\n  box-shadow: 0 0 7px -3px #0000008c;\n}\n\n.filter-list {\n  display: -webkit-box;\n  display: flex;\n  flex-wrap: wrap;\n  overflow-y: auto;\n  overflow-x: hidden;\n  height: 100%;\n  max-height: calc(100vh - 157px);\n}\n\n.filter-list--item {\n  width: 50%;\n  margin-bottom: 10px;\n  display: -webkit-box;\n  display: flex;\n  -webkit-box-align: center;\n          align-items: center;\n  -webkit-box-pack: justify;\n          justify-content: space-between;\n  padding-right: 4px;\n}\n\n.filter-list--item .list-text {\n  overflow: hidden;\n  position: relative;\n  display: inline-block;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\n\n.filter-list--item i {\n  cursor: -webkit-grab;\n  cursor: grab;\n}\n\n.filter-list--item i:active {\n  cursor: -webkit-grabbing;\n  cursor: grabbing;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvbGF5b3V0L21haW4vaG9tZS9DOlxcVXNlcnNcXFVzZXJcXERvY3VtZW50c1xcZXJhc2VudC1jbGllbnQvc3JjXFxhcHBcXGxheW91dFxcbWFpblxcaG9tZVxcaG9tZS5jb21wb25lbnQuc2NzcyIsInNyYy9hcHAvbGF5b3V0L21haW4vaG9tZS9ob21lLmNvbXBvbmVudC5zY3NzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBO0VBQ0ksZUFBQTtFQUNBLHFCQUFBO0VBQ0EsV0FBQTtFQUNBLFlBQUE7RUFDQSxNQUFBO0VBQ0EsVUFBQTtBQ0NKOztBREVBO0VBQ0ksa0JBQUE7RUFDQSxXQUFBO0VBQ0EsZ0JBQUE7RUFDQSx1QkFBQTtFQUNBLGtEQUFBO1VBQUEsMENBQUE7RUFDQSw0QkFBQTtFQUFBLG9CQUFBO0VBQ0EsWUFBQTtFQUNBLFFBQUE7RUFDQSxNQUFBO0VBQ0EsYUFBQTtFQUNBLFVBQUE7RUFDQSxnREFBQTtBQ0NKOztBRENJO0VBQ0ksbURBQUE7VUFBQSwyQ0FBQTtFQUNBLFlBQUE7RUFDQSxPQUFBO0VBQ0EsZ0JBQUE7RUFDQSwrQ0FBQTtBQ0NSOztBREVJO0VBQ0ksa0NBQUE7VUFBQSwwQkFBQTtFQUNBLFlBQUE7QUNBUjs7QURJQTtFQUNJLGtCQUFBO0VBQ0EsWUFBQTtFQUNBLFNBQUE7RUFDQSxpQkFBQTtFQUNBLGtDQUFBO0FDREo7O0FESUE7RUFDSSxrQkFBQTtFQUNBLGFBQUE7RUFDQSxTQUFBO0VBQ0EsaUJBQUE7RUFDQSxrQ0FBQTtBQ0RKOztBRElBO0VBQ0ksb0JBQUE7RUFBQSxhQUFBO0VBQ0EsZUFBQTtFQUNBLGdCQUFBO0VBQ0Esa0JBQUE7RUFDQSxZQUFBO0VBQ0EsK0JBQUE7QUNESjs7QURFSTtFQUNJLFVBQUE7RUFDQSxtQkFBQTtFQUNBLG9CQUFBO0VBQUEsYUFBQTtFQUNBLHlCQUFBO1VBQUEsbUJBQUE7RUFDQSx5QkFBQTtVQUFBLDhCQUFBO0VBQ0Esa0JBQUE7QUNBUjs7QURDUTtFQUNJLGdCQUFBO0VBQ0Esa0JBQUE7RUFDQSxxQkFBQTtFQUNBLHVCQUFBO0VBQ0EsbUJBQUE7QUNDWjs7QURDUTtFQUNJLG9CQUFBO0VBQUEsWUFBQTtBQ0NaOztBREFZO0VBQ0ksd0JBQUE7RUFBQSxnQkFBQTtBQ0VoQiIsImZpbGUiOiJzcmMvYXBwL2xheW91dC9tYWluL2hvbWUvaG9tZS5jb21wb25lbnQuc2NzcyIsInNvdXJjZXNDb250ZW50IjpbIi5jbGlja1NoaWVsZCB7XHJcbiAgICBwb3NpdGlvbjogZml4ZWQ7XHJcbiAgICBiYWNrZ3JvdW5kOiAjMDAwMDAwM2Q7XHJcbiAgICB3aWR0aDogMTAwJTtcclxuICAgIGhlaWdodDogMTAwJTtcclxuICAgIHRvcDogMDtcclxuICAgIHotaW5kZXg6IDE7XHJcbn1cclxuXHJcbi5zaWRlYmFyIHtcclxuICAgIHBvc2l0aW9uOiBhYnNvbHV0ZTtcclxuICAgIHdpZHRoOiAxMDAlO1xyXG4gICAgbWF4LXdpZHRoOiA0MDBweDtcclxuICAgIGJhY2tncm91bmQtY29sb3I6IHdoaXRlO1xyXG4gICAgdHJhbnNmb3JtOiB0cmFuc2xhdGUoY2FsYygxMDAlICsgMTBweCksIDApO1xyXG4gICAgdHJhbnNpdGlvbjogYWxsIDAuNHM7XHJcbiAgICBoZWlnaHQ6IDEwMCU7XHJcbiAgICByaWdodDogMDtcclxuICAgIHRvcDogMDtcclxuICAgIHBhZGRpbmc6IDE1cHg7XHJcbiAgICB6LWluZGV4OiAxO1xyXG4gICAgYm94LXNoYWRvdzogcmdiYSgwLCAwLCAwLCAwLjEpIC04cHggMHB4IDVweCAtNHB4O1xyXG5cclxuICAgICYubGVmdCB7XHJcbiAgICAgICAgdHJhbnNmb3JtOiB0cmFuc2xhdGUoY2FsYygtMTAwJSAtIDEwcHgpLCAwKTtcclxuICAgICAgICByaWdodDogdW5zZXQ7XHJcbiAgICAgICAgbGVmdDogMDtcclxuICAgICAgICBtYXgtd2lkdGg6IDU2MHB4O1xyXG4gICAgICAgIGJveC1zaGFkb3c6IHJnYmEoMCwgMCwgMCwgMC4xKSA4cHggMHB4IDVweCAtNHB4O1xyXG4gICAgfVxyXG5cclxuICAgICYuc2hvdyB7XHJcbiAgICAgICAgdHJhbnNmb3JtOiB0cmFuc2xhdGUoMCwgMCk7XHJcbiAgICAgICAgei1pbmRleDogMTExO1xyXG4gICAgfVxyXG59XHJcblxyXG4uZmlsdGVyYnV0dG9uIHtcclxuICAgIHBvc2l0aW9uOiBhYnNvbHV0ZTtcclxuICAgIHJpZ2h0OiAtNjNweDtcclxuICAgIHRvcDogNzNweDtcclxuICAgIGJhY2tncm91bmQ6IHdoaXRlO1xyXG4gICAgYm94LXNoYWRvdzogMCAwIDdweCAtM3B4ICMwMDAwMDA4YztcclxufVxyXG5cclxuLnNlYXJjaGJ1dHRvbiB7XHJcbiAgICBwb3NpdGlvbjogYWJzb2x1dGU7XHJcbiAgICByaWdodDogLTEyMHB4O1xyXG4gICAgdG9wOiA3M3B4O1xyXG4gICAgYmFja2dyb3VuZDogd2hpdGU7XHJcbiAgICBib3gtc2hhZG93OiAwIDAgN3B4IC0zcHggIzAwMDAwMDhjO1xyXG59XHJcblxyXG4uZmlsdGVyLWxpc3R7XHJcbiAgICBkaXNwbGF5OiBmbGV4O1xyXG4gICAgZmxleC13cmFwOiB3cmFwO1xyXG4gICAgb3ZlcmZsb3cteTogYXV0bztcclxuICAgIG92ZXJmbG93LXg6IGhpZGRlbjtcclxuICAgIGhlaWdodDogMTAwJTtcclxuICAgIG1heC1oZWlnaHQ6IGNhbGMoMTAwdmggLSAxNTdweCk7XHJcbiAgICAmLS1pdGVte1xyXG4gICAgICAgIHdpZHRoOiA1MCU7XHJcbiAgICAgICAgbWFyZ2luLWJvdHRvbTogMTBweDtcclxuICAgICAgICBkaXNwbGF5OiBmbGV4O1xyXG4gICAgICAgIGFsaWduLWl0ZW1zOiBjZW50ZXI7XHJcbiAgICAgICAganVzdGlmeS1jb250ZW50OiBzcGFjZS1iZXR3ZWVuO1xyXG4gICAgICAgIHBhZGRpbmctcmlnaHQ6IDRweDtcclxuICAgICAgICAubGlzdC10ZXh0e1xyXG4gICAgICAgICAgICBvdmVyZmxvdzogaGlkZGVuO1xyXG4gICAgICAgICAgICBwb3NpdGlvbjogcmVsYXRpdmU7XHJcbiAgICAgICAgICAgIGRpc3BsYXk6IGlubGluZS1ibG9jaztcclxuICAgICAgICAgICAgdGV4dC1vdmVyZmxvdzogZWxsaXBzaXM7XHJcbiAgICAgICAgICAgIHdoaXRlLXNwYWNlOiBub3dyYXA7XHJcbiAgICAgICAgfVxyXG4gICAgICAgIGl7XHJcbiAgICAgICAgICAgIGN1cnNvcjogZ3JhYjtcclxuICAgICAgICAgICAgJjphY3RpdmV7XHJcbiAgICAgICAgICAgICAgICBjdXJzb3I6IGdyYWJiaW5nO1xyXG4gICAgICAgICAgICB9XHJcbiAgICAgICAgfVxyXG4gICAgfVxyXG59XHJcbiIsIi5jbGlja1NoaWVsZCB7XG4gIHBvc2l0aW9uOiBmaXhlZDtcbiAgYmFja2dyb3VuZDogIzAwMDAwMDNkO1xuICB3aWR0aDogMTAwJTtcbiAgaGVpZ2h0OiAxMDAlO1xuICB0b3A6IDA7XG4gIHotaW5kZXg6IDE7XG59XG5cbi5zaWRlYmFyIHtcbiAgcG9zaXRpb246IGFic29sdXRlO1xuICB3aWR0aDogMTAwJTtcbiAgbWF4LXdpZHRoOiA0MDBweDtcbiAgYmFja2dyb3VuZC1jb2xvcjogd2hpdGU7XG4gIHRyYW5zZm9ybTogdHJhbnNsYXRlKGNhbGMoMTAwJSArIDEwcHgpLCAwKTtcbiAgdHJhbnNpdGlvbjogYWxsIDAuNHM7XG4gIGhlaWdodDogMTAwJTtcbiAgcmlnaHQ6IDA7XG4gIHRvcDogMDtcbiAgcGFkZGluZzogMTVweDtcbiAgei1pbmRleDogMTtcbiAgYm94LXNoYWRvdzogcmdiYSgwLCAwLCAwLCAwLjEpIC04cHggMHB4IDVweCAtNHB4O1xufVxuLnNpZGViYXIubGVmdCB7XG4gIHRyYW5zZm9ybTogdHJhbnNsYXRlKGNhbGMoLTEwMCUgLSAxMHB4KSwgMCk7XG4gIHJpZ2h0OiB1bnNldDtcbiAgbGVmdDogMDtcbiAgbWF4LXdpZHRoOiA1NjBweDtcbiAgYm94LXNoYWRvdzogcmdiYSgwLCAwLCAwLCAwLjEpIDhweCAwcHggNXB4IC00cHg7XG59XG4uc2lkZWJhci5zaG93IHtcbiAgdHJhbnNmb3JtOiB0cmFuc2xhdGUoMCwgMCk7XG4gIHotaW5kZXg6IDExMTtcbn1cblxuLmZpbHRlcmJ1dHRvbiB7XG4gIHBvc2l0aW9uOiBhYnNvbHV0ZTtcbiAgcmlnaHQ6IC02M3B4O1xuICB0b3A6IDczcHg7XG4gIGJhY2tncm91bmQ6IHdoaXRlO1xuICBib3gtc2hhZG93OiAwIDAgN3B4IC0zcHggIzAwMDAwMDhjO1xufVxuXG4uc2VhcmNoYnV0dG9uIHtcbiAgcG9zaXRpb246IGFic29sdXRlO1xuICByaWdodDogLTEyMHB4O1xuICB0b3A6IDczcHg7XG4gIGJhY2tncm91bmQ6IHdoaXRlO1xuICBib3gtc2hhZG93OiAwIDAgN3B4IC0zcHggIzAwMDAwMDhjO1xufVxuXG4uZmlsdGVyLWxpc3Qge1xuICBkaXNwbGF5OiBmbGV4O1xuICBmbGV4LXdyYXA6IHdyYXA7XG4gIG92ZXJmbG93LXk6IGF1dG87XG4gIG92ZXJmbG93LXg6IGhpZGRlbjtcbiAgaGVpZ2h0OiAxMDAlO1xuICBtYXgtaGVpZ2h0OiBjYWxjKDEwMHZoIC0gMTU3cHgpO1xufVxuLmZpbHRlci1saXN0LS1pdGVtIHtcbiAgd2lkdGg6IDUwJTtcbiAgbWFyZ2luLWJvdHRvbTogMTBweDtcbiAgZGlzcGxheTogZmxleDtcbiAgYWxpZ24taXRlbXM6IGNlbnRlcjtcbiAganVzdGlmeS1jb250ZW50OiBzcGFjZS1iZXR3ZWVuO1xuICBwYWRkaW5nLXJpZ2h0OiA0cHg7XG59XG4uZmlsdGVyLWxpc3QtLWl0ZW0gLmxpc3QtdGV4dCB7XG4gIG92ZXJmbG93OiBoaWRkZW47XG4gIHBvc2l0aW9uOiByZWxhdGl2ZTtcbiAgZGlzcGxheTogaW5saW5lLWJsb2NrO1xuICB0ZXh0LW92ZXJmbG93OiBlbGxpcHNpcztcbiAgd2hpdGUtc3BhY2U6IG5vd3JhcDtcbn1cbi5maWx0ZXItbGlzdC0taXRlbSBpIHtcbiAgY3Vyc29yOiBncmFiO1xufVxuLmZpbHRlci1saXN0LS1pdGVtIGk6YWN0aXZlIHtcbiAgY3Vyc29yOiBncmFiYmluZztcbn0iXX0= */"
 
 /***/ }),
 
@@ -333,28 +333,71 @@ __webpack_require__.r(__webpack_exports__);
 let HomeComponent = class HomeComponent {
     constructor(mainServices) {
         this.mainServices = mainServices;
-        this.filterList = ['', '', '', '', '', '', '', '', '', '', '', '', '', ''];
         this.connected = {};
+        this.filterApplicaton = {};
+        this.filterPort = {};
     }
     ngOnInit() {
     }
     ngAfterViewInit() {
-        this.mainServices.getDataSample().subscribe(data => {
+        this.mainServices.getDataSample().subscribe((data) => {
             console.log(data);
-            this.data = data;
+            this.dataStore = data.slice();
+            this.data = data.slice();
+            this.filterData();
             this.init();
             this.drow();
         });
     }
+    filterData() {
+        this.data.forEach((item) => {
+            if (!this.filterApplicaton[item.SourceProdName || item.TargetProdName]) {
+                this.filterApplicaton[item.SourceProdName || item.TargetProdName] = {
+                    count: 0,
+                    flag: true,
+                    name: item.SourceProdName || item.TargetProdName
+                };
+            }
+            if (!this.filterPort[item.TargetPort]) {
+                this.filterPort[item.TargetPort] = {
+                    count: 0,
+                    flag: true,
+                    name: item.TargetProdName + '(' + item.TargetPort + ')'
+                };
+            }
+            this.filterApplicaton[item.SourceProdName || item.TargetProdName].count++;
+            this.filterPort[item.TargetPort].count++;
+        });
+        console.log(this.filterApplicaton, this.filterPort);
+    }
+    filterChange(e, item) {
+        let data = this.dataStore.slice();
+        Object.keys(this.filterApplicaton).forEach((k) => {
+            if (!this.filterApplicaton[k].flag) {
+                data = data.filter((element) => {
+                    return k !== (element.SourceProdName || element.TargetProdName);
+                });
+            }
+        });
+        Object.keys(this.filterPort).forEach((k) => {
+            if (!this.filterPort[k].flag) {
+                data = data.filter((element) => {
+                    return k !== (element.TargetPort);
+                });
+            }
+        });
+        this.dataFilter = data.slice();
+        this.dataFilterSearch();
+    }
     drow() {
-        let self = this;
-        let data = {
+        const self = this;
+        this.dataDrow = {
             nodes: this.data,
             links: []
         };
         this.data.forEach(el => {
             var sKey = el.SourceId + "," + (el.SourceImageName || "?"), tKey = el.TargetId + "," + (el.TargetImageName || "?");
-            data.links.push({ "source": sKey, "target": tKey, "value": 1 });
+            this.dataDrow.links.push({ "source": sKey, "target": tKey, "value": 1 });
             if (!this.connected[sKey]) {
                 this.connected[sKey] = [];
             }
@@ -371,12 +414,12 @@ let HomeComponent = class HomeComponent {
         var link = this.conteiner.append("g")
             .attr("class", "links")
             .selectAll("polyline")
-            .data(data.links)
+            .data(this.dataDrow.links)
             .enter().append("polyline");
         var node = this.conteiner.append("g")
             .attr("class", "nodes")
             .selectAll("g")
-            .data(data.nodes)
+            .data(this.dataDrow.nodes)
             .enter().append("g");
         let g = node.append("g");
         g.append("svg:circle")
@@ -390,47 +433,10 @@ let HomeComponent = class HomeComponent {
             d3.selectAll("circle").style("opacity", 1).style("stroke", "#b6fdba").style("stroke-width", 2 + "px");
             d3.selectAll("polyline").style("opacity", 1).style("stroke-width", 2 + "px");
             d3.selectAll("text").style("opacity", 1).style("fill", "black");
+            self.dataFilterSearch();
         }
         function nodeOver(d, i, e) {
-            highlightNeighbors(d, i);
-        }
-        function highlightNeighbors(d, i) {
-            var nodeNeighbors = findNeighbors(d, i);
-            d3.selectAll("circle").each(function (p) {
-                var isNeighbor = nodeNeighbors.nodes.indexOf(p);
-                d3.select(this)
-                    .style("opacity", isNeighbor > -1 ? 1 : .25)
-                    .style("stroke", isNeighbor > -1 ? "yellow" : "#b6fdba");
-            });
-            d3.selectAll("polyline")
-                .style("stroke-width", function (d) {
-                return nodeNeighbors.links.indexOf(d) > -1 ? 3 : 2;
-            })
-                .style("opacity", function (d) {
-                return nodeNeighbors.links.indexOf(d) > -1 ? 1 : .25;
-            });
-            d3.selectAll("text")
-                .style("opacity", function (d) {
-                return nodeNeighbors.nodes.indexOf(d) > -1 ? 1 : 0;
-            })
-                .style("fill", function (n) {
-                return n === d ? "blue" : "black";
-            });
-        }
-        function findNeighbors(d, i) {
-            let neighborArray = [d];
-            var linkArray = [];
-            data.links.forEach((p) => {
-                if (p.source === d || p.target === d) {
-                    neighborArray.indexOf(p.source) == -1 ? neighborArray.push(p.source) : null;
-                    neighborArray.indexOf(p.target) == -1 ? neighborArray.push(p.target) : null;
-                    linkArray.push(p);
-                }
-            });
-            return {
-                nodes: neighborArray,
-                links: linkArray
-            };
+            self.highlightNeighbors(d, i);
         }
         function nodeClick(d, i, e) {
             self.selectedNode = d;
@@ -445,10 +451,10 @@ let HomeComponent = class HomeComponent {
         node.append("title")
             .text(function (d) { return d.SourceId + "," + (d.SourceImageName || "?"); });
         simulation
-            .nodes(data.nodes)
+            .nodes(this.dataDrow.nodes)
             .on("tick", ticked);
         simulation.force("link")
-            .links(data.links);
+            .links(this.dataDrow.links);
         function ticked() {
             link.attr("points", function (d) {
                 return (d.source.x +
@@ -472,6 +478,63 @@ let HomeComponent = class HomeComponent {
                 return "translate(" + d.x + "," + d.y + ")";
             });
         }
+    }
+    dataFilterSearch() {
+        if (this.dataFilter)
+            this.dataFilter.forEach(element => {
+                let self = this;
+                d3.selectAll("circle").each(function (p) {
+                    var isNeighbor = self.dataFilter.indexOf(p);
+                    d3.select(this)
+                        .style("opacity", isNeighbor > -1 ? 1 : .25);
+                });
+                d3.selectAll("polyline")
+                    .style("opacity", function (d) {
+                    return self.dataFilter.indexOf(d.source) > -1 ? 1 : .25;
+                });
+                d3.selectAll("text")
+                    .style("opacity", function (d) {
+                    return self.dataFilter.indexOf(d) > -1 ? 1 : 0;
+                });
+            });
+    }
+    highlightNeighbors(d, i) {
+        var nodeNeighbors = this.findNeighbors(d, i);
+        d3.selectAll("circle").each(function (p) {
+            var isNeighbor = nodeNeighbors.nodes.indexOf(p);
+            d3.select(this)
+                .style("opacity", isNeighbor > -1 ? 1 : .25)
+                .style("stroke", isNeighbor > -1 ? "yellow" : "#b6fdba");
+        });
+        d3.selectAll("polyline")
+            .style("stroke-width", function (d) {
+            return nodeNeighbors.links.indexOf(d) > -1 ? 3 : 2;
+        })
+            .style("opacity", function (d) {
+            return nodeNeighbors.links.indexOf(d) > -1 ? 1 : .25;
+        });
+        d3.selectAll("text")
+            .style("opacity", function (d) {
+            return nodeNeighbors.nodes.indexOf(d) > -1 ? 1 : 0;
+        })
+            .style("fill", function (n) {
+            return n === d ? "blue" : "black";
+        });
+    }
+    findNeighbors(d, i) {
+        let neighborArray = [d];
+        var linkArray = [];
+        this.dataDrow.links.forEach((p) => {
+            if (p.source === d || p.target === d) {
+                neighborArray.indexOf(p.source) == -1 ? neighborArray.push(p.source) : null;
+                neighborArray.indexOf(p.target) == -1 ? neighborArray.push(p.target) : null;
+                linkArray.push(p);
+            }
+        });
+        return {
+            nodes: neighborArray,
+            links: linkArray
+        };
     }
     init() {
         this.zoom = d3
@@ -550,6 +613,11 @@ let HomeComponent = class HomeComponent {
             .attr("class", "path")
             .attr("d", "M 0 0 6 3 0 6 3 3")
             .style("fill", "#999");
+    }
+    removeAll() {
+        d3.selectAll("line").remove();
+        d3.selectAll("polyline").remove();
+        d3.selectAll(".path").remove();
     }
     rangeWidth(flag) {
         if (flag) {

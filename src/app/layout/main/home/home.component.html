@@ -25,11 +25,11 @@
     <div *ngIf="showSearch" class="example-container">
             <h2>APPLICATION</h2>
             <mat-form-field class="example-full-width">
-                <input matInput placeholder="Search">
+                <input matInput [(ngModel)]="searchModel" placeholder="Search">
             </mat-form-field>
             <div class="filter-list">
                 <div class="filter-list--item" 
-                *ngFor="let item of data; let i = index">
+                *ngFor="let item of data | search:'SourceId':searchModel; let i = index">
                     <span class="list-text" [title]="item.SourceId + ',' + (item.SourceImageName || '?')">{{item.SourceId + ',' + (item.SourceImageName || '?')}}</span>
                     <i class="material-icons">
                         my_location
@@ -58,15 +58,17 @@
     <div class="example-container">
         <div *ngIf="selectedNode">
             <mat-list>
-                <mat-list-item>Application name: {{selectedNode.SourceId + ',' + (selectedNode.SourceImageName || '?')}}</mat-list-item>
+                <mat-list-item><b>Application name: </b> {{selectedNode.appName}}</mat-list-item>
+                <mat-list-item>Publisher: {{selectedNode.publisher}}</mat-list-item>
+                <mat-list-item>Process Name: {{selectedNode.name}}</mat-list-item>
+                <mat-list-item *ngIf="selectedNode.serverHostname">Installed on: {{selectedNode.serverHostname}}</mat-list-item>
                 <mat-divider></mat-divider>
-                <mat-list-item>Publisher: {{selectedNode.SourceMfgName}}</mat-list-item>
-                <mat-divider></mat-divider>
-                <mat-list-item>Server name: {{selectedNode.SourceHostname}}</mat-list-item>
-                <mat-divider></mat-divider>
-                <mat-list-item>Connected:</mat-list-item>
-                <mat-list-item *ngFor="let item of connected[selectedNode.SourceId + ',' + (selectedNode.SourceImageName || '?')]">{{item}}</mat-list-item>
-            </mat-list>
+                <mat-list-item *ngIf="connected[selectedNode.id]"><b>Connects to:</b></mat-list-item>
+                <mat-list-item *ngFor="let item of connected[selectedNode.id]">{{item}}</mat-list-item>
+                <mat-divider *ngIf="depended[selectedNode.id] && connected[selectedNode.id]"></mat-divider>
+                <mat-list-item *ngIf="depended[selectedNode.id]"><b>Dependent Applications:</b></mat-list-item>
+                <mat-list-item *ngFor="let item of depended[selectedNode.id]">{{item}}</mat-list-item>
+              </mat-list>
         </div>
     </div>
 </div>

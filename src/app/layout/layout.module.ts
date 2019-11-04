@@ -18,9 +18,10 @@ import { MainService } from '../shared/services/main.service';
 import { HttpClientModule } from '@angular/common/http';
 import {MatDividerModule} from '@angular/material/divider';
 import {MatListModule, MatButtonModule, MatCheckboxModule} from '@angular/material';
+import { SearchPipe } from '../shared/pipe/search-pipe';
 
 @NgModule({
-  declarations: [MainComponent, HomeComponent],
+  declarations: [SearchPipe, MainComponent, HomeComponent],
   imports: [
     CommonModule,
     BrowserAnimationsModule,

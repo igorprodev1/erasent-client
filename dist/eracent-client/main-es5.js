@@ -41,7 +41,7 @@ module.exports = "<router-outlet></router-outlet>"
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div [ngClass]=\"{ show: showFilter || showSearch }\" class=\"sidebar left show\">\r\n    <div *ngIf=\"showFilter\" class=\"example-container\">\r\n        <h2>Filter</h2>\r\n        <h3>APPLICATION PROCESSES:</h3>\r\n        <div class=\"filter-list\">\r\n            <div class=\"filter-list--item\" \r\n            *ngFor=\"let item of filterApplicaton | keyvalue; let i = index\"\r\n            [hidden]=\"!item.key\">\r\n                <mat-checkbox [(ngModel)]=\"item.value.flag\" (ngModelChange)=\"filterChange($event, item)\">\r\n                    {{item.value.count}} {{item.value.name}}\r\n                </mat-checkbox>\r\n            </div>\r\n        </div>\r\n        <h3>CONNECTION PORT:</h3>\r\n        <div class=\"filter-list\">\r\n                <div class=\"filter-list--item\" \r\n            *ngFor=\"let item of filterPort | keyvalue; let i = index\"\r\n            [hidden]=\"!item.key\">\r\n                <mat-checkbox [(ngModel)]=\"item.value.flag\" (ngModelChange)=\"filterChange($event, item)\">\r\n                    {{item.value.count}} {{item.value.name}}\r\n                </mat-checkbox>\r\n            </div>\r\n        </div>\r\n    </div>\r\n    <div *ngIf=\"showSearch\" class=\"example-container\">\r\n            <h2>APPLICATION</h2>\r\n            <mat-form-field class=\"example-full-width\">\r\n                <input matInput placeholder=\"Search\">\r\n            </mat-form-field>\r\n            <div class=\"filter-list\">\r\n                <div class=\"filter-list--item\" \r\n                *ngFor=\"let item of data; let i = index\">\r\n                    <span class=\"list-text\" [title]=\"item.SourceId + ',' + (item.SourceImageName || '?')\">{{item.SourceId + ',' + (item.SourceImageName || '?')}}</span>\r\n                    <i class=\"material-icons\">\r\n                        my_location\r\n                    </i>\r\n                </div>\r\n            </div>\r\n    </div>\r\n    <button mat-icon-button class=\"filterbutton\" (click)=\"showFilter = !showFilter; showSearch = false;\">\r\n        <i class=\"material-icons\">\r\n            filter_list\r\n        </i>\r\n    </button>\r\n    <button mat-icon-button class=\"searchbutton\" (click)=\"showSearch = !showSearch; showFilter = false;\">\r\n        <i class=\"material-icons\">\r\n            search\r\n        </i>\r\n    </button>\r\n</div>\r\n\r\n<mat-card>\r\n    <div class=\"coco-bpm-graph\" id=\"graph\" style=\"height: calc(100vh - 96px);\"></div>\r\n</mat-card>\r\n\r\n<div class=\"clickShield\" *ngIf=\"showSide\" (click)=\"showSide = false\"></div>\r\n<div [ngClass]=\"{ show: showSide }\" class=\"sidebar show\">\r\n    <div class=\"example-container\">\r\n        <div *ngIf=\"selectedNode\">\r\n            <mat-list>\r\n                <mat-list-item>Application name: {{selectedNode.SourceId + ',' + (selectedNode.SourceImageName || '?')}}</mat-list-item>\r\n                <mat-divider></mat-divider>\r\n                <mat-list-item>Publisher: {{selectedNode.SourceMfgName}}</mat-list-item>\r\n                <mat-divider></mat-divider>\r\n                <mat-list-item>Server name: {{selectedNode.SourceHostname}}</mat-list-item>\r\n                <mat-divider></mat-divider>\r\n                <mat-list-item>Connected:</mat-list-item>\r\n                <mat-list-item *ngFor=\"let item of connected[selectedNode.SourceId + ',' + (selectedNode.SourceImageName || '?')]\">{{item}}</mat-list-item>\r\n            </mat-list>\r\n        </div>\r\n    </div>\r\n</div>"
+module.exports = "<div [ngClass]=\"{ show: showFilter || showSearch }\" class=\"sidebar left show\">\r\n    <div *ngIf=\"showFilter\" class=\"example-container\">\r\n        <h2>Filter</h2>\r\n        <h3>APPLICATION PROCESSES:</h3>\r\n        <div class=\"filter-list\">\r\n            <div class=\"filter-list--item\" \r\n            *ngFor=\"let item of filterApplicaton | keyvalue; let i = index\"\r\n            [hidden]=\"!item.key\">\r\n                <mat-checkbox [(ngModel)]=\"item.value.flag\" (ngModelChange)=\"filterChange($event, item)\">\r\n                    {{item.value.count}} {{item.value.name}}\r\n                </mat-checkbox>\r\n            </div>\r\n        </div>\r\n        <h3>CONNECTION PORT:</h3>\r\n        <div class=\"filter-list\">\r\n                <div class=\"filter-list--item\" \r\n            *ngFor=\"let item of filterPort | keyvalue; let i = index\"\r\n            [hidden]=\"!item.key\">\r\n                <mat-checkbox [(ngModel)]=\"item.value.flag\" (ngModelChange)=\"filterChange($event, item)\">\r\n                    {{item.value.count}} {{item.value.name}}\r\n                </mat-checkbox>\r\n            </div>\r\n        </div>\r\n    </div>\r\n    <div *ngIf=\"showSearch\" class=\"example-container\">\r\n            <h2>APPLICATION</h2>\r\n            <mat-form-field class=\"example-full-width\">\r\n                <input matInput [(ngModel)]=\"searchModel\" placeholder=\"Search\">\r\n            </mat-form-field>\r\n            <div class=\"filter-list\">\r\n                <div class=\"filter-list--item\" \r\n                *ngFor=\"let item of data | search:'SourceId':searchModel; let i = index\">\r\n                    <span class=\"list-text\" [title]=\"item.SourceId + ',' + (item.SourceImageName || '?')\">{{item.SourceId + ',' + (item.SourceImageName || '?')}}</span>\r\n                    <i class=\"material-icons\">\r\n                        my_location\r\n                    </i>\r\n                </div>\r\n            </div>\r\n    </div>\r\n    <button mat-icon-button class=\"filterbutton\" (click)=\"showFilter = !showFilter; showSearch = false;\">\r\n        <i class=\"material-icons\">\r\n            filter_list\r\n        </i>\r\n    </button>\r\n    <button mat-icon-button class=\"searchbutton\" (click)=\"showSearch = !showSearch; showFilter = false;\">\r\n        <i class=\"material-icons\">\r\n            search\r\n        </i>\r\n    </button>\r\n</div>\r\n\r\n<mat-card>\r\n    <div class=\"coco-bpm-graph\" id=\"graph\" style=\"height: calc(100vh - 96px);\"></div>\r\n</mat-card>\r\n\r\n<div class=\"clickShield\" *ngIf=\"showSide\" (click)=\"showSide = false\"></div>\r\n<div [ngClass]=\"{ show: showSide }\" class=\"sidebar show\">\r\n    <div class=\"example-container\">\r\n        <div *ngIf=\"selectedNode\">\r\n            <mat-list>\r\n                <mat-list-item><b>Application name: </b> {{selectedNode.appName}}</mat-list-item>\r\n                <mat-list-item>Publisher: {{selectedNode.publisher}}</mat-list-item>\r\n                <mat-list-item>Process Name: {{selectedNode.name}}</mat-list-item>\r\n                <mat-list-item *ngIf=\"selectedNode.serverHostname\">Installed on: {{selectedNode.serverHostname}}</mat-list-item>\r\n                <mat-divider></mat-divider>\r\n                <mat-list-item *ngIf=\"connected[selectedNode.id]\"><b>Connects to:</b></mat-list-item>\r\n                <mat-list-item *ngFor=\"let item of connected[selectedNode.id]\">{{item}}</mat-list-item>\r\n                <mat-divider *ngIf=\"depended[selectedNode.id] && connected[selectedNode.id]\"></mat-divider>\r\n                <mat-list-item *ngIf=\"depended[selectedNode.id]\"><b>Dependent Applications:</b></mat-list-item>\r\n                <mat-list-item *ngFor=\"let item of depended[selectedNode.id]\">{{item}}</mat-list-item>\r\n              </mat-list>\r\n        </div>\r\n    </div>\r\n</div>"
 
 /***/ }),
 
@@ -263,6 +263,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _angular_common_http__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! @angular/common/http */ "./node_modules/@angular/common/fesm5/http.js");
 /* harmony import */ var _angular_material_divider__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! @angular/material/divider */ "./node_modules/@angular/material/esm5/divider.es5.js");
 /* harmony import */ var _angular_material__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! @angular/material */ "./node_modules/@angular/material/esm5/material.es5.js");
+/* harmony import */ var _shared_pipe_search_pipe__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! ../shared/pipe/search-pipe */ "./src/app/shared/pipe/search-pipe.ts");
 
 
 
@@ -283,12 +284,13 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
 var LayoutModule = /** @class */ (function () {
     function LayoutModule() {
     }
     LayoutModule = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["NgModule"])({
-            declarations: [_main_main_component__WEBPACK_IMPORTED_MODULE_3__["MainComponent"], _main_home_home_component__WEBPACK_IMPORTED_MODULE_5__["HomeComponent"]],
+            declarations: [_shared_pipe_search_pipe__WEBPACK_IMPORTED_MODULE_19__["SearchPipe"], _main_main_component__WEBPACK_IMPORTED_MODULE_3__["MainComponent"], _main_home_home_component__WEBPACK_IMPORTED_MODULE_5__["HomeComponent"]],
             imports: [
                 _angular_common__WEBPACK_IMPORTED_MODULE_2__["CommonModule"],
                 _angular_platform_browser_animations__WEBPACK_IMPORTED_MODULE_7__["BrowserAnimationsModule"],
@@ -349,8 +351,10 @@ var HomeComponent = /** @class */ (function () {
     function HomeComponent(mainServices) {
         this.mainServices = mainServices;
         this.connected = {};
+        this.depended = {};
         this.filterApplicaton = {};
         this.filterPort = {};
+        this.searchModel = "";
     }
     HomeComponent.prototype.ngOnInit = function () {
     };
@@ -360,47 +364,47 @@ var HomeComponent = /** @class */ (function () {
             console.log(data);
             _this.dataStore = data.slice();
             _this.data = data.slice();
-            _this.filterData();
             _this.init();
             _this.drow();
         });
     };
     HomeComponent.prototype.filterData = function () {
         var _this = this;
-        this.data.forEach(function (item) {
-            if (!_this.filterApplicaton[item.SourceProdName || item.TargetProdName]) {
-                _this.filterApplicaton[item.SourceProdName || item.TargetProdName] = {
+        this.dataDrow.nodes.forEach(function (item) {
+            if (!_this.filterApplicaton[item.id]) {
+                _this.filterApplicaton[item.id] = {
                     count: 0,
                     flag: true,
-                    name: item.SourceProdName || item.TargetProdName
+                    name: item.id
                 };
             }
-            if (!_this.filterPort[item.TargetPort]) {
-                _this.filterPort[item.TargetPort] = {
+            if (!_this.filterPort[item.port]) {
+                _this.filterPort[item.port] = {
                     count: 0,
                     flag: true,
-                    name: item.TargetProdName + '(' + item.TargetPort + ')'
+                    name: item.port
                 };
             }
-            _this.filterApplicaton[item.SourceProdName || item.TargetProdName].count++;
-            _this.filterPort[item.TargetPort].count++;
+            _this.filterApplicaton[item.id].count++;
+            _this.filterPort[item.port].count++;
         });
         console.log(this.filterApplicaton, this.filterPort);
     };
     HomeComponent.prototype.filterChange = function (e, item) {
         var _this = this;
-        var data = this.dataStore.slice();
+        var data = this.dataDrow.nodes.slice();
+        console.log(data);
         Object.keys(this.filterApplicaton).forEach(function (k) {
             if (!_this.filterApplicaton[k].flag) {
                 data = data.filter(function (element) {
-                    return k !== (element.SourceProdName || element.TargetProdName);
+                    return k !== element.id;
                 });
             }
         });
         Object.keys(this.filterPort).forEach(function (k) {
             if (!_this.filterPort[k].flag) {
                 data = data.filter(function (element) {
-                    return k !== (element.TargetPort);
+                    return k !== element.port;
                 });
             }
         });
@@ -411,21 +415,58 @@ var HomeComponent = /** @class */ (function () {
         var _this = this;
         var self = this;
         this.dataDrow = {
-            nodes: this.data,
+            nodes: [],
             links: []
         };
+        var nodes = {};
+        var links = [];
         this.data.forEach(function (el) {
+            var l = {};
+            links.push(l);
             var sKey = el.SourceId + "," + (el.SourceImageName || "?"), tKey = el.TargetId + "," + (el.TargetImageName || "?");
-            _this.dataDrow.links.push({ "source": sKey, "target": tKey, "value": 1 });
+            l.source =
+                nodes[sKey] ||
+                    (nodes[sKey] = {
+                        id: sKey,
+                        serverId: el.SourceId,
+                        name: el.SourceImageName,
+                        ip: el.SourceIPAddress,
+                        appName: el.SourceProdName,
+                        publisher: el.SourceMfgName,
+                        serverHostname: el.ServerHostname,
+                        port: el.SourcePort || el.TargetPort,
+                        linkCount: 0
+                    });
+            l.source.linkCount++;
+            l.target =
+                nodes[tKey] ||
+                    (nodes[tKey] = {
+                        id: tKey,
+                        serverId: el.TargetId,
+                        name: el.TargetImageName,
+                        ip: el.TargetIPAddress,
+                        appName: el.TargetProdName,
+                        publisher: el.TargetMfgName,
+                        serverHostname: el.TargetHostname,
+                        port: el.TargetPort || el.SourcePort,
+                        linkCount: 0
+                    });
+            l.target.linkCount++;
             if (!_this.connected[sKey]) {
                 _this.connected[sKey] = [];
             }
-            ;
-            _this.connected[sKey].push(tKey);
+            _this.connected[sKey].push(el.TargetProdName + ' (on ' + el.TargetHostname + ':' + el.TargetPort + ')');
+            if (!_this.depended[tKey]) {
+                _this.depended[tKey] = [];
+            }
+            _this.depended[tKey].push(el.SourceProdName + (el.ServerHostname ? (' (on ' + el.ServerHostname + ':' + el.SourcePort + ')') : ''));
         });
+        this.dataDrow = { nodes: d3.values(nodes), links: links };
+        this.dataFilter = this.dataDrow.nodes.slice();
+        this.filterData();
         var simulation = d3.forceSimulation()
             .force("link", d3.forceLink().id(function (d) {
-            return d.SourceId + "," + (d.SourceImageName || "?");
+            return d.id;
         }).distance(100).strength(1))
             .force("charge", d3.forceManyBody())
             .force('collide', d3.forceCollide(function (d) { return 30; }))
@@ -455,7 +496,10 @@ var HomeComponent = /** @class */ (function () {
             self.dataFilterSearch();
         }
         function nodeOver(d, i, e) {
-            self.highlightNeighbors(d, i);
+            if (self.dataFilter.indexOf(d) > -1) {
+                self.highlightNeighbors(d, i);
+                self.dataFilterSearch();
+            }
         }
         function nodeClick(d, i, e) {
             self.selectedNode = d;
@@ -463,12 +507,12 @@ var HomeComponent = /** @class */ (function () {
         }
         node.append("text")
             .text(function (d) {
-            return d.SourceId + "," + (d.SourceImageName || "?");
+            return d.id;
         })
             .attr('x', 6)
             .attr('y', 3);
         node.append("title")
-            .text(function (d) { return d.SourceId + "," + (d.SourceImageName || "?"); });
+            .text(function (d) { return d.id; });
         simulation
             .nodes(this.dataDrow.nodes)
             .on("tick", ticked);
@@ -500,7 +544,7 @@ var HomeComponent = /** @class */ (function () {
     };
     HomeComponent.prototype.dataFilterSearch = function () {
         var _this = this;
-        if (this.dataFilter)
+        if (this.dataFilter) {
             this.dataFilter.forEach(function (element) {
                 var self = _this;
                 d3.selectAll("circle").each(function (p) {
@@ -510,13 +554,14 @@ var HomeComponent = /** @class */ (function () {
                 });
                 d3.selectAll("polyline")
                     .style("opacity", function (d) {
-                    return self.dataFilter.indexOf(d.source) > -1 ? 1 : .25;
+                    return (self.dataFilter.indexOf(d.target) > -1 && self.dataFilter.indexOf(d.source) > -1) ? 1 : .25;
                 });
                 d3.selectAll("text")
                     .style("opacity", function (d) {
                     return self.dataFilter.indexOf(d) > -1 ? 1 : 0;
                 });
             });
+        }
     };
     HomeComponent.prototype.highlightNeighbors = function (d, i) {
         var nodeNeighbors = this.findNeighbors(d, i);
@@ -714,6 +759,40 @@ var MainComponent = /** @class */ (function () {
 
 /***/ }),
 
+/***/ "./src/app/shared/pipe/search-pipe.ts":
+/*!********************************************!*\
+  !*** ./src/app/shared/pipe/search-pipe.ts ***!
+  \********************************************/
+/*! exports provided: SearchPipe */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SearchPipe", function() { return SearchPipe; });
+/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
+
+
+var SearchPipe = /** @class */ (function () {
+    function SearchPipe() {
+    }
+    SearchPipe.prototype.transform = function (value, keys, term) {
+        if (!term)
+            return value;
+        return (value || []).filter(function (item) { return (item.SourceId + ',' + (item.SourceImageName || '?')).indexOf(term) >= 0; });
+    };
+    SearchPipe = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Pipe"])({
+            name: 'search'
+        })
+    ], SearchPipe);
+    return SearchPipe;
+}());
+
+
+
+/***/ }),
+
 /***/ "./src/app/shared/services/main.service.ts":
 /*!*************************************************!*\
   !*** ./src/app/shared/services/main.service.ts ***!
@@ -735,7 +814,7 @@ var MainService = /** @class */ (function () {
         this.http = http;
     }
     MainService.prototype.getDataSample = function () {
-        return this.http.get('assets/examples/DataSample1.json');
+        return this.http.get('assets/examples/DataSample5.json');
     };
     MainService.ctorParameters = function () { return [
         { type: _angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpClient"] }

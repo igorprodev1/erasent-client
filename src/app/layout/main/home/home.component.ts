@@ -28,7 +28,8 @@ export class HomeComponent implements OnInit, AfterViewInit {
   dataDrow;
   dataFilter;
   searchModel = "";
-
+  width;
+  height;
   constructor(private mainServices: MainService) {
   }
 
@@ -36,6 +37,8 @@ export class HomeComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
+    this.width = window.innerWidth;
+    this.height = window.innerHeight;
     this.mainServices.getDataSample().subscribe((data: any[]) => {
       console.log(data);
       this.dataStore = data.slice();
@@ -72,7 +75,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
   filterChange(e, item) {
     let data = this.dataDrow.nodes.slice();
-    console.log(data)
     Object.keys(this.filterApplicaton).forEach((k) => {
       if (!this.filterApplicaton[k].flag) {
         data = data.filter((element) => {
@@ -160,7 +162,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
       }).distance(100).strength(1))
       .force("charge", d3.forceManyBody())
       .force('collide', d3.forceCollide(function (d) { return 30; }))
-      .force("center", d3.forceCenter(window.innerWidth / 2, window.innerHeight / 2));
+      .force("center", d3.forceCenter(this.width / 2, this.height / 2));
     var link = this.conteiner.append("g")
       .attr("class", "links")
       .selectAll("polyline")
@@ -177,6 +179,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
     g.append("svg:circle")
       .attr("class", "nodes")
       .attr("r", "5px")
+      .attr("id", (d) => d.id)
       .attr("fill", "#3cd57c")
       .on("mouseover", nodeOver)
       .on("mouseout", nodeOut)
@@ -244,6 +247,47 @@ export class HomeComponent implements OnInit, AfterViewInit {
           return "translate(" + d.x + "," + d.y + ")";
         });
     }
+  }
+
+  goToNode(item) {
+    let self = this;
+    d3.selectAll("circle").each(function (p) {
+      if (p.id === item.id) {
+        self.clearSelection();
+        d3.select(this)
+        .style("opacity", 1)
+        .style("stroke", "yellow");
+        var transform = self.getTransform(d3.select(this), 2.0, item)
+        d3.zoomIdentity.scale(transform.scale)
+        .translate(transform.translate);
+        self.vis.transition().duration(1000)
+           .attr("transform", "translate(" + transform.translate + ")scale(" + transform.scale + ")");
+      }
+    });
+  }
+
+  clearSelection() {
+    d3.selectAll("circle").each(function (p) {
+      d3.select(this)
+        .style("stroke", "#b6fdba");
+    });
+  }
+
+  getTransform(node, xScale, item) {
+    let bbox = node.node().getBBox();
+    var bx = item.x;
+    var by = item.y;
+    var bw = bbox.width;
+    var bh = bbox.height;
+    let vis = this.conteiner.node().getBBox();
+    var vx = vis.x;		// container x co-ordinate
+    var vy = vis.y;		// container y co-ordinate
+    var vw = vis.width;	// container width
+    var vh = vis.height;	// container height
+    var tx = -bx*xScale + vx + vw/2 - bw*xScale/2;
+    var ty = -by*xScale + vy + vh/2 - bh*xScale/2;
+    
+    return {translate: [tx + 700, ty + 200], scale: xScale}
   }
 
   dataFilterSearch() {
@@ -325,7 +369,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
         this.conteiner.attr("transform", currentTransform);
         this.slider.property("value", currentTransform.k);
         this.rangeWidth();
-
       });
     this.vis = d3.select("#graph").append("svg");
     var w = "100%",

@@ -1,41 +1,41 @@
 <div [ngClass]="{ show: showFilter || showSearch }" class="sidebar left show">
     <div *ngIf="showFilter" class="example-container">
         <h2>Filter</h2>
-        <h3>APPLICATION PROCESSES:</h3>
-        <div class="filter-list">
-            <div class="filter-list--item" 
-            *ngFor="let item of filterApplicaton | keyvalue; let i = index"
-            [hidden]="!item.key">
-                <mat-checkbox [(ngModel)]="item.value.flag" (ngModelChange)="filterChange($event, item)">
-                    {{item.value.count}} {{item.value.name}}
-                </mat-checkbox>
+        <div class="filter-list-wrap">
+            <h3>APPLICATION PROCESSES:</h3>
+            <div class="filter-list">
+                <div class="filter-list--item" *ngFor="let item of filterApplicaton | keyvalue; let i = index"
+                    [hidden]="!item.key">
+                    <mat-checkbox [(ngModel)]="item.value.flag" (ngModelChange)="filterChange($event, item)">
+                        {{item.value.count}} - {{item.value.name}}
+                    </mat-checkbox>
+                </div>
             </div>
-        </div>
-        <h3>CONNECTION PORT:</h3>
-        <div class="filter-list">
-                <div class="filter-list--item" 
-            *ngFor="let item of filterPort | keyvalue; let i = index"
-            [hidden]="!item.key">
-                <mat-checkbox [(ngModel)]="item.value.flag" (ngModelChange)="filterChange($event, item)">
-                    {{item.value.count}} {{item.value.name}}
-                </mat-checkbox>
+            <h3 style="top: 53px;">CONNECTION PORT:</h3>
+            <div class="filter-list">
+                <div class="filter-list--item" *ngFor="let item of filterPort | keyvalue; let i = index"
+                    [hidden]="!item.key">
+                    <mat-checkbox [(ngModel)]="item.value.flag" (ngModelChange)="filterChange($event, item)">
+                        {{item.value.count}} - {{item.value.name}}
+                    </mat-checkbox>
+                </div>
             </div>
         </div>
     </div>
     <div *ngIf="showSearch" class="example-container">
-            <h2>APPLICATION</h2>
-            <mat-form-field class="example-full-width">
-                <input matInput [(ngModel)]="searchModel" placeholder="Search">
-            </mat-form-field>
-            <div class="filter-list">
-                <div class="filter-list--item" 
+        <h2>APPLICATION</h2>
+        <mat-form-field class="example-full-width">
+            <input matInput [(ngModel)]="searchModel" placeholder="Search">
+        </mat-form-field>
+        <div class="filter-list filter-list-wrap">
+            <div class="filter-list--item"
                 *ngFor="let item of dataDrow.nodes | search:'SourceId':searchModel; let i = index">
-                    <span class="list-text" [title]="item.appName">{{item.appName}}</span>
-                    <i (click)="goToNode(item)" class="material-icons">
-                        my_location
-                    </i>
-                </div>
+                <span class="list-text" [title]="item.appName">{{item.appName || item.id}}</span>
+                <i (click)="goToNode(item)" class="material-icons">
+                    my_location
+                </i>
             </div>
+        </div>
     </div>
     <button mat-icon-button class="filterbutton" (click)="showFilter = !showFilter; showSearch = false;">
         <i class="material-icons">
@@ -61,14 +61,15 @@
                 <mat-list-item><b>Application name: </b> {{selectedNode.appName}}</mat-list-item>
                 <mat-list-item>Publisher: {{selectedNode.publisher}}</mat-list-item>
                 <mat-list-item>Process Name: {{selectedNode.name}}</mat-list-item>
-                <mat-list-item *ngIf="selectedNode.serverHostname">Installed on: {{selectedNode.serverHostname}}</mat-list-item>
+                <mat-list-item *ngIf="selectedNode.serverHostname">Installed on: {{selectedNode.serverHostname}}
+                </mat-list-item>
                 <mat-divider></mat-divider>
                 <mat-list-item *ngIf="connected[selectedNode.id]"><b>Connects to:</b></mat-list-item>
                 <mat-list-item *ngFor="let item of connected[selectedNode.id]">{{item}}</mat-list-item>
                 <mat-divider *ngIf="depended[selectedNode.id] && connected[selectedNode.id]"></mat-divider>
                 <mat-list-item *ngIf="depended[selectedNode.id]"><b>Dependent Applications:</b></mat-list-item>
                 <mat-list-item *ngFor="let item of depended[selectedNode.id]">{{item}}</mat-list-item>
-              </mat-list>
+            </mat-list>
         </div>
     </div>
 </div>

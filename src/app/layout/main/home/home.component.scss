@@ -50,14 +50,25 @@
     background: white;
     box-shadow: 0 0 7px -3px #0000008c;
 }
-
-.filter-list{
-    display: flex;
-    flex-wrap: wrap;
+.filter-list-wrap{
     overflow-y: auto;
     overflow-x: hidden;
     height: 100%;
     max-height: calc(100vh - 157px);
+    h3{
+        margin: 0;
+        padding: 15px 0;
+        background: white;
+        position: sticky;
+        z-index: 1;
+        &:first-child{
+            top: 0;
+        }
+    }
+}
+.filter-list{
+    display: flex;
+    flex-wrap: wrap;
     &--item{
         width: 50%;
         margin-bottom: 10px;

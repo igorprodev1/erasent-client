@@ -83,14 +83,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
       }
     });
 
-    Object.keys(this.filterPort).forEach((k) => {
-      if (!this.filterPort[k].flag) {
-        data = data.filter((element) => {
-          return k !== element.port;
-        });
-      }
-    });
-
     this.dataFilter = data.slice();
     this.dataFilterSearch();
   }
@@ -251,17 +243,23 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
   goToNode(item) {
     let self = this;
+
     d3.selectAll("circle").each(function (p) {
       if (p.id === item.id) {
         self.clearSelection();
         d3.select(this)
         .style("opacity", 1)
         .style("stroke", "yellow");
-        var transform = self.getTransform(d3.select(this), 2.0, item)
+        var transform = self.getTransform(d3.select(this), 2.0, item);
         d3.zoomIdentity.scale(transform.scale)
         .translate(transform.translate);
-        self.vis.transition().duration(1000)
-           .attr("transform", "translate(" + transform.translate + ")scale(" + transform.scale + ")");
+        self.conteiner.transition().duration(1000)
+            .attr("transform", "translate(" + transform.translate + ")scale(" + transform.scale + ")");
+        if  (self.zoomTrans) {
+          self.zoomTrans.k = 2.0;
+          self.zoomTrans.x = transform.translate[0];
+          self.zoomTrans.y = transform.translate[1];
+        }
       }
     });
   }
@@ -287,27 +285,39 @@ export class HomeComponent implements OnInit, AfterViewInit {
     var tx = -bx*xScale + vx + vw/2 - bw*xScale/2;
     var ty = -by*xScale + vy + vh/2 - bh*xScale/2;
     
-    return {translate: [tx + 700, ty + 200], scale: xScale}
+    return {translate: [tx + 200 , ty ], scale: xScale}
   }
 
   dataFilterSearch() {
+    let self = this;
     if (this.dataFilter) {
       this.dataFilter.forEach(element => {
-        let self = this;
+        let validCircle = [];
         d3.selectAll("circle").each(function (p) {
+          self.dataDrow.links.forEach((d) => {
+            if ((p.id === d.source.id && (self.filterPort[d.target.port] 
+              && self.filterPort[d.target.port].flag)) ||
+              (p.id === d.target.id && (self.filterPort[d.target.port] 
+                && self.filterPort[d.target.port].flag)) ) {
+                validCircle.push(p.id)
+            } 
+          });
           var isNeighbor = self.dataFilter.indexOf(p);
           d3.select(this)
-            .style("opacity", isNeighbor > -1 ? 1 : .25);
+            .style("opacity", (isNeighbor > -1) && (validCircle.indexOf(p.id) > -1) ? 1 : .25);
         });
 
         d3.selectAll("polyline")
           .style("opacity", function (d) {
-            return (self.dataFilter.indexOf(d.target) > -1 && self.dataFilter.indexOf(d.source) > -1) ? 1 : .25;
+            let f = self.filterPort[d.target.port];
+            return ((!(f && !f.flag)) &&
+            (self.dataFilter.indexOf(d.target) > -1 && self.dataFilter.indexOf(d.source) > -1)) 
+            ? 1 : .25;
           });
 
         d3.selectAll("text")
           .style("opacity", function (d) {
-            return self.dataFilter.indexOf(d) > -1 ? 1 : 0;
+            return (self.dataFilter.indexOf(d) > -1) && (validCircle.indexOf(d.id) > -1) ? 1 : 0;
           });
       });
     }
@@ -378,8 +388,8 @@ export class HomeComponent implements OnInit, AfterViewInit {
       .attr("height", h);
 
     this.vis.call(this.zoom).on("dblclick.zoom", null);
-
     this.conteiner = this.vis.append("g").attr("id", "wrap");
+
     let g = d3
       .select("#graph")
       .append("div")

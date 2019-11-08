@@ -41,7 +41,7 @@ module.exports = "<router-outlet></router-outlet>"
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div [ngClass]=\"{ show: showFilter || showSearch }\" class=\"sidebar left show\">\r\n    <div *ngIf=\"showFilter\" class=\"example-container\">\r\n        <h2>Filter</h2>\r\n        <div class=\"filter-list-wrap\">\r\n            <h3>APPLICATION PROCESSES:</h3>\r\n            <div class=\"filter-list\">\r\n                <div class=\"filter-list--item\" *ngFor=\"let item of filterApplicaton | keyvalue; let i = index\"\r\n                    [hidden]=\"!item.key\">\r\n                    <mat-checkbox [(ngModel)]=\"item.value.flag\" (ngModelChange)=\"filterChange($event, item)\">\r\n                        {{item.value.count}} - {{item.value.name}}\r\n                    </mat-checkbox>\r\n                </div>\r\n            </div>\r\n            <h3 style=\"top: 53px;\">CONNECTION PORT:</h3>\r\n            <div class=\"filter-list\">\r\n                <div class=\"filter-list--item\" *ngFor=\"let item of filterPort | keyvalue; let i = index\"\r\n                    [hidden]=\"!item.key\">\r\n                    <mat-checkbox [(ngModel)]=\"item.value.flag\" (ngModelChange)=\"filterChange($event, item)\">\r\n                        {{item.value.count}} - {{item.value.name}}\r\n                    </mat-checkbox>\r\n                </div>\r\n            </div>\r\n        </div>\r\n    </div>\r\n    <div *ngIf=\"showSearch\" class=\"example-container\">\r\n        <h2>APPLICATION</h2>\r\n        <mat-form-field class=\"example-full-width\">\r\n            <input matInput [(ngModel)]=\"searchModel\" placeholder=\"Search\">\r\n        </mat-form-field>\r\n        <div class=\"filter-list filter-list-wrap\">\r\n            <div class=\"filter-list--item\"\r\n                *ngFor=\"let item of dataDrow.nodes | search:'SourceId':searchModel; let i = index\">\r\n                <span class=\"list-text\" [title]=\"item.appName\">{{item.appName || item.id}}</span>\r\n                <i (click)=\"goToNode(item)\" class=\"material-icons\">\r\n                    my_location\r\n                </i>\r\n            </div>\r\n        </div>\r\n    </div>\r\n    <button mat-icon-button class=\"filterbutton\" (click)=\"showFilter = !showFilter; showSearch = false;\">\r\n        <i class=\"material-icons\">\r\n            filter_list\r\n        </i>\r\n    </button>\r\n    <button mat-icon-button class=\"searchbutton\" (click)=\"showSearch = !showSearch; showFilter = false;\">\r\n        <i class=\"material-icons\">\r\n            search\r\n        </i>\r\n    </button>\r\n</div>\r\n\r\n<mat-card>\r\n    <div class=\"coco-bpm-graph\" id=\"graph\" style=\"height: calc(100vh - 96px);\"></div>\r\n</mat-card>\r\n\r\n<div class=\"clickShield\" *ngIf=\"showSide\" (click)=\"showSide = false\"></div>\r\n<div [ngClass]=\"{ show: showSide }\" class=\"sidebar show\">\r\n    <div class=\"example-container\">\r\n        <div *ngIf=\"selectedNode\">\r\n            <mat-list>\r\n                <mat-list-item><b>Application name: </b> {{selectedNode.appName}}</mat-list-item>\r\n                <mat-list-item>Publisher: {{selectedNode.publisher}}</mat-list-item>\r\n                <mat-list-item>Process Name: {{selectedNode.name}}</mat-list-item>\r\n                <mat-list-item *ngIf=\"selectedNode.serverHostname\">Installed on: {{selectedNode.serverHostname}}\r\n                </mat-list-item>\r\n                <mat-divider></mat-divider>\r\n                <mat-list-item *ngIf=\"connected[selectedNode.id]\"><b>Connects to:</b></mat-list-item>\r\n                <mat-list-item *ngFor=\"let item of connected[selectedNode.id]\">{{item}}</mat-list-item>\r\n                <mat-divider *ngIf=\"depended[selectedNode.id] && connected[selectedNode.id]\"></mat-divider>\r\n                <mat-list-item *ngIf=\"depended[selectedNode.id]\"><b>Dependent Applications:</b></mat-list-item>\r\n                <mat-list-item *ngFor=\"let item of depended[selectedNode.id]\">{{item}}</mat-list-item>\r\n            </mat-list>\r\n        </div>\r\n    </div>\r\n</div>"
+module.exports = "<div [ngClass]=\"{ show: showFilter || showSearch }\" class=\"sidebar left show\">\r\n    <div *ngIf=\"showFilter\" class=\"example-container\">\r\n        <h2>Filter</h2>\r\n        <div class=\"filter-list-wrap\">\r\n            <h3>APPLICATION PROCESSES:</h3>\r\n            <div class=\"filter-list\">\r\n                <div class=\"filter-list--item\" *ngFor=\"let item of filterApplicaton | keyvalue | sort:'fieldName'; let i = index\"\r\n                    [hidden]=\"!item.key\">\r\n                    <mat-checkbox [(ngModel)]=\"item.value.flag\" (ngModelChange)=\"filterChange($event, item)\">\r\n                        {{item.value.count}} - {{item.value.name}}\r\n                    </mat-checkbox>\r\n                </div>\r\n            </div>\r\n            <h3 style=\"top: 53px;\">CONNECTION PORT:</h3>\r\n            <div class=\"filter-list\">\r\n                <div class=\"filter-list--item\" *ngFor=\"let item of filterPort | keyvalue; let i = index\"\r\n                    [hidden]=\"!item.key\">\r\n                    <mat-checkbox [(ngModel)]=\"item.value.flag\" (ngModelChange)=\"filterChange($event, item)\">\r\n                        {{item.value.count}} - {{item.value.name}}\r\n                    </mat-checkbox>\r\n                </div>\r\n            </div>\r\n        </div>\r\n    </div>\r\n    <div *ngIf=\"showSearch\" class=\"example-container\">\r\n        <h2>APPLICATION</h2>\r\n        <mat-form-field class=\"example-full-width\">\r\n            <input matInput [(ngModel)]=\"searchModel\" placeholder=\"Search\">\r\n        </mat-form-field>\r\n        <div class=\"filter-list filter-list-wrap\">\r\n            <div class=\"filter-list--item\"\r\n                *ngFor=\"let item of dataDrow.nodes | search:'SourceId':searchModel; let i = index\">\r\n                <span class=\"list-text\" [title]=\"item.appName\">{{item.appName || item.id}}</span>\r\n                <i (click)=\"goToNode(item)\" class=\"material-icons\">\r\n                    my_location\r\n                </i>\r\n            </div>\r\n        </div>\r\n    </div>\r\n    <button mat-icon-button class=\"filterbutton\" (click)=\"showFilter = !showFilter; showSearch = false;\">\r\n        <i class=\"material-icons\">\r\n            filter_list\r\n        </i>\r\n    </button>\r\n    <button mat-icon-button class=\"searchbutton\" (click)=\"showSearch = !showSearch; showFilter = false;\">\r\n        <i class=\"material-icons\">\r\n            search\r\n        </i>\r\n    </button>\r\n</div>\r\n\r\n<mat-card>\r\n    <div class=\"coco-bpm-graph\" id=\"graph\" style=\"height: calc(100vh - 96px);\"></div>\r\n</mat-card>\r\n\r\n<div class=\"clickShield\" *ngIf=\"showSide\" (click)=\"showSide = false\"></div>\r\n<div [ngClass]=\"{ show: showSide }\" class=\"sidebar show\">\r\n    <div class=\"example-container\">\r\n        <div *ngIf=\"selectedNode\">\r\n            <mat-list>\r\n                <mat-list-item><b>Application name: </b> {{selectedNode.appName}}</mat-list-item>\r\n                <mat-list-item>Publisher: {{selectedNode.publisher}}</mat-list-item>\r\n                <mat-list-item>Process Name: {{selectedNode.name}}</mat-list-item>\r\n                <mat-list-item *ngIf=\"selectedNode.serverHostname\">Installed on: {{selectedNode.serverHostname}}\r\n                </mat-list-item>\r\n                <mat-divider></mat-divider>\r\n                <mat-list-item *ngIf=\"connected[selectedNode.id]\"><b>Connects to:</b></mat-list-item>\r\n                <mat-list-item *ngFor=\"let item of connected[selectedNode.id]\">{{item}}</mat-list-item>\r\n                <mat-divider *ngIf=\"depended[selectedNode.id] && connected[selectedNode.id]\"></mat-divider>\r\n                <mat-list-item *ngIf=\"depended[selectedNode.id]\"><b>Dependent Applications:</b></mat-list-item>\r\n                <mat-list-item *ngFor=\"let item of depended[selectedNode.id]\">{{item}}</mat-list-item>\r\n            </mat-list>\r\n        </div>\r\n    </div>\r\n</div>"
 
 /***/ }),
 
@@ -264,6 +264,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _angular_material_divider__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! @angular/material/divider */ "./node_modules/@angular/material/esm5/divider.es5.js");
 /* harmony import */ var _angular_material__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! @angular/material */ "./node_modules/@angular/material/esm5/material.es5.js");
 /* harmony import */ var _shared_pipe_search_pipe__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! ../shared/pipe/search-pipe */ "./src/app/shared/pipe/search-pipe.ts");
+/* harmony import */ var _shared_pipe_sort_pipe__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(/*! ../shared/pipe/sort-pipe */ "./src/app/shared/pipe/sort-pipe.ts");
 
 
 
@@ -285,12 +286,13 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
 var LayoutModule = /** @class */ (function () {
     function LayoutModule() {
     }
     LayoutModule = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["NgModule"])({
-            declarations: [_shared_pipe_search_pipe__WEBPACK_IMPORTED_MODULE_19__["SearchPipe"], _main_main_component__WEBPACK_IMPORTED_MODULE_3__["MainComponent"], _main_home_home_component__WEBPACK_IMPORTED_MODULE_5__["HomeComponent"]],
+            declarations: [_shared_pipe_search_pipe__WEBPACK_IMPORTED_MODULE_19__["SearchPipe"], _shared_pipe_sort_pipe__WEBPACK_IMPORTED_MODULE_20__["ArraySortPipe"], _main_main_component__WEBPACK_IMPORTED_MODULE_3__["MainComponent"], _main_home_home_component__WEBPACK_IMPORTED_MODULE_5__["HomeComponent"]],
             imports: [
                 _angular_common__WEBPACK_IMPORTED_MODULE_2__["CommonModule"],
                 _angular_platform_browser_animations__WEBPACK_IMPORTED_MODULE_7__["BrowserAnimationsModule"],
@@ -373,11 +375,12 @@ var HomeComponent = /** @class */ (function () {
     HomeComponent.prototype.filterData = function () {
         var _this = this;
         this.dataDrow.nodes.forEach(function (item) {
-            if (!_this.filterApplicaton[item.id]) {
-                _this.filterApplicaton[item.id] = {
+            var key = item.appName || item.name || '?';
+            if (!_this.filterApplicaton[key]) {
+                _this.filterApplicaton[key] = {
                     count: 0,
                     flag: true,
-                    name: item.id
+                    name: key
                 };
             }
             if (!_this.filterPort[item.port]) {
@@ -387,10 +390,10 @@ var HomeComponent = /** @class */ (function () {
                     name: item.port
                 };
             }
-            _this.filterApplicaton[item.id].count++;
+            _this.filterApplicaton[key].count++;
             _this.filterPort[item.port].count++;
         });
-        console.log(this.filterApplicaton, this.filterPort);
+        console.log(this.dataDrow.nodes, this.filterApplicaton, this.filterPort);
     };
     HomeComponent.prototype.filterChange = function (e, item) {
         var _this = this;
@@ -398,7 +401,8 @@ var HomeComponent = /** @class */ (function () {
         Object.keys(this.filterApplicaton).forEach(function (k) {
             if (!_this.filterApplicaton[k].flag) {
                 data = data.filter(function (element) {
-                    return k !== element.id;
+                    var key = element.appName || element.name || '?';
+                    return k !== key;
                 });
             }
         });
@@ -428,7 +432,7 @@ var HomeComponent = /** @class */ (function () {
                         appName: el.SourceProdName,
                         publisher: el.SourceMfgName,
                         serverHostname: el.ServerHostname,
-                        port: el.SourcePort || el.TargetPort,
+                        port: el.TargetPort,
                         linkCount: 0
                     });
             l.source.linkCount++;
@@ -442,7 +446,7 @@ var HomeComponent = /** @class */ (function () {
                         appName: el.TargetProdName,
                         publisher: el.TargetMfgName,
                         serverHostname: el.TargetHostname,
-                        port: el.TargetPort || el.SourcePort,
+                        port: el.TargetPort,
                         linkCount: 0
                     });
             l.target.linkCount++;
@@ -586,10 +590,10 @@ var HomeComponent = /** @class */ (function () {
                 var validCircle = [];
                 d3.selectAll("circle").each(function (p) {
                     self.dataDrow.links.forEach(function (d) {
-                        if ((p.id === d.source.id && (self.filterPort[d.target.port]
-                            && self.filterPort[d.target.port].flag)) ||
-                            (p.id === d.target.id && (self.filterPort[d.target.port]
-                                && self.filterPort[d.target.port].flag))) {
+                        if ((p.id === d.source.id && (self.filterPort[p.port]
+                            && self.filterPort[p.port].flag)) ||
+                            (p.id === d.target.id && (self.filterPort[p.port]
+                                && self.filterPort[p.port].flag))) {
                             validCircle.push(p.id);
                         }
                     });
@@ -835,6 +839,53 @@ var SearchPipe = /** @class */ (function () {
         })
     ], SearchPipe);
     return SearchPipe;
+}());
+
+
+
+/***/ }),
+
+/***/ "./src/app/shared/pipe/sort-pipe.ts":
+/*!******************************************!*\
+  !*** ./src/app/shared/pipe/sort-pipe.ts ***!
+  \******************************************/
+/*! exports provided: ArraySortPipe */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ArraySortPipe", function() { return ArraySortPipe; });
+/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
+
+
+var ArraySortPipe = /** @class */ (function () {
+    function ArraySortPipe() {
+    }
+    ArraySortPipe.prototype.transform = function (array, field) {
+        if (!Array.isArray(array)) {
+            return;
+        }
+        array.sort(function (a, b) {
+            if (a.key < b.key) {
+                return -1;
+            }
+            if (a.key > b.key) {
+                return 1;
+            }
+            return 0;
+        });
+        array.sort(function (a, b) {
+            return b.value.count - a.value.count;
+        });
+        return array;
+    };
+    ArraySortPipe = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Pipe"])({
+            name: "sort"
+        })
+    ], ArraySortPipe);
+    return ArraySortPipe;
 }());
 
 

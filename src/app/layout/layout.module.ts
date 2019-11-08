@@ -19,9 +19,10 @@ import { HttpClientModule } from '@angular/common/http';
 import {MatDividerModule} from '@angular/material/divider';
 import {MatListModule, MatButtonModule, MatCheckboxModule} from '@angular/material';
 import { SearchPipe } from '../shared/pipe/search-pipe';
+import { ArraySortPipe } from '../shared/pipe/sort-pipe';
 
 @NgModule({
-  declarations: [SearchPipe, MainComponent, HomeComponent],
+  declarations: [SearchPipe, ArraySortPipe, MainComponent, HomeComponent],
   imports: [
     CommonModule,
     BrowserAnimationsModule,

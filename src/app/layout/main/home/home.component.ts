@@ -50,11 +50,12 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
   filterData() {
     this.dataDrow.nodes.forEach((item) => {
-      if (!this.filterApplicaton[item.id]) {
-        this.filterApplicaton[item.id] = {
+      let key = item.appName || item.name || '?';
+      if (!this.filterApplicaton[key]) {
+        this.filterApplicaton[key] = {
           count: 0,
           flag: true,
-          name: item.id
+          name: key
         };
       }
 
@@ -66,11 +67,11 @@ export class HomeComponent implements OnInit, AfterViewInit {
         };
       }
 
-      this.filterApplicaton[item.id].count++;
+      this.filterApplicaton[key].count++;
       this.filterPort[item.port].count++;
     });
 
-    console.log(this.filterApplicaton, this.filterPort);
+    console.log(this.dataDrow.nodes, this.filterApplicaton, this.filterPort);
   }
 
   filterChange(e, item) {
@@ -78,7 +79,8 @@ export class HomeComponent implements OnInit, AfterViewInit {
     Object.keys(this.filterApplicaton).forEach((k) => {
       if (!this.filterApplicaton[k].flag) {
         data = data.filter((element) => {
-          return k !== element.id;
+          let key = element.appName || element.name || '?';
+          return k !== key;
         });
       }
     });
@@ -114,7 +116,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
           appName: el.SourceProdName,
           publisher: el.SourceMfgName,
           serverHostname: el.ServerHostname,
-          port: el.SourcePort || el.TargetPort,
+          port: el.TargetPort,
           linkCount: 0
         });
       l.source.linkCount++;
@@ -128,7 +130,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
           appName: el.TargetProdName,
           publisher: el.TargetMfgName,
           serverHostname: el.TargetHostname,
-          port: el.TargetPort || el.SourcePort,
+          port: el.TargetPort,
           linkCount: 0
         });
       l.target.linkCount++;
@@ -295,10 +297,10 @@ export class HomeComponent implements OnInit, AfterViewInit {
         let validCircle = [];
         d3.selectAll("circle").each(function (p) {
           self.dataDrow.links.forEach((d) => {
-            if ((p.id === d.source.id && (self.filterPort[d.target.port] 
-              && self.filterPort[d.target.port].flag)) ||
-              (p.id === d.target.id && (self.filterPort[d.target.port] 
-                && self.filterPort[d.target.port].flag)) ) {
+            if ((p.id === d.source.id && (self.filterPort[p.port] 
+              && self.filterPort[p.port].flag)) ||
+              (p.id === d.target.id && (self.filterPort[p.port] 
+                && self.filterPort[p.port].flag)) ) {
                 validCircle.push(p.id)
             } 
           });

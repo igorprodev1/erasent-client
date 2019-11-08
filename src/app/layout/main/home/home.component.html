@@ -4,7 +4,7 @@
         <div class="filter-list-wrap">
             <h3>APPLICATION PROCESSES:</h3>
             <div class="filter-list">
-                <div class="filter-list--item" *ngFor="let item of filterApplicaton | keyvalue; let i = index"
+                <div class="filter-list--item" *ngFor="let item of filterApplicaton | keyvalue | sort:'fieldName'; let i = index"
                     [hidden]="!item.key">
                     <mat-checkbox [(ngModel)]="item.value.flag" (ngModelChange)="filterChange($event, item)">
                         {{item.value.count}} - {{item.value.name}}

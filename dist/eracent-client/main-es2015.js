@@ -584,8 +584,9 @@ let HomeComponent = class HomeComponent {
                 });
                 d3.selectAll("polyline")
                     .style("opacity", function (d) {
-                    let f = self.filterPort[d.target.port];
-                    return ((!(f && !f.flag)) &&
+                    let fS = self.filterPort[d.source.port];
+                    let fT = self.filterPort[d.target.port];
+                    return ((!(fT && !fT.flag)) && (!(fS && !fS.flag)) &&
                         (self.dataFilter.indexOf(d.target) > -1 && self.dataFilter.indexOf(d.source) > -1))
                         ? 1 : .25;
                 });

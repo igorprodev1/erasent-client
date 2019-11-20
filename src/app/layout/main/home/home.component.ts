@@ -117,6 +117,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
           publisher: el.SourceMfgName,
           serverHostname: el.ServerHostname,
           port: el.TargetPort,
+          host: el.SourceHostname,
           linkCount: 0
         });
       l.source.linkCount++;
@@ -131,6 +132,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
           publisher: el.TargetMfgName,
           serverHostname: el.TargetHostname,
           port: el.TargetPort,
+          host: el.TargetHostname,
           linkCount: 0
         });
       l.target.linkCount++;
@@ -293,16 +295,15 @@ export class HomeComponent implements OnInit, AfterViewInit {
   dataFilterSearch() {
     let self = this;
     if (this.dataFilter) {
-      this.dataFilter.forEach(element => {
         let validCircle = [];
         d3.selectAll("circle").each(function (p) {
           self.dataDrow.links.forEach((d) => {
-            if ((p.id === d.source.id && (self.filterPort[p.port] 
+            if ((p.id === d.source.id && (self.filterPort[p.port]
               && self.filterPort[p.port].flag)) ||
-              (p.id === d.target.id && (self.filterPort[p.port] 
+              (p.id === d.target.id && (self.filterPort[p.port]
                 && self.filterPort[p.port].flag)) ) {
-                validCircle.push(p.id)
-            } 
+                validCircle.push(p.id);
+            }
           });
           var isNeighbor = self.dataFilter.indexOf(p);
           d3.select(this)
@@ -314,7 +315,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
             let fS = self.filterPort[d.source.port];
             let fT = self.filterPort[d.target.port];
             return ((!(fT && !fT.flag)) && (!(fS && !fS.flag)) &&
-            (self.dataFilter.indexOf(d.target) > -1 && self.dataFilter.indexOf(d.source) > -1)) 
+            (self.dataFilter.indexOf(d.target) > -1 && self.dataFilter.indexOf(d.source) > -1))
             ? 1 : .25;
           });
 
@@ -322,7 +323,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
           .style("opacity", function (d) {
             return (self.dataFilter.indexOf(d) > -1) && (validCircle.indexOf(d.id) > -1) ? 1 : 0;
           });
-      });
     }
   }
 

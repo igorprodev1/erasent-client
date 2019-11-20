@@ -30,7 +30,7 @@
         <div class="filter-list filter-list-wrap">
             <div class="filter-list--item"
                 *ngFor="let item of dataDrow.nodes | search:'SourceId':searchModel; let i = index">
-                <span class="list-text" [title]="item.appName">{{item.appName || item.id}}</span>
+                <span class="list-text" title="{{item.appName || item.id}} (on: {{item.host}})">{{item.appName || item.id}} (on: {{item.host}})</span>
                 <i (click)="goToNode(item)" class="material-icons">
                     my_location
                 </i>

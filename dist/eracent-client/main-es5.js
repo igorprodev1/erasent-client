@@ -603,8 +603,9 @@ var HomeComponent = /** @class */ (function () {
                 });
                 d3.selectAll("polyline")
                     .style("opacity", function (d) {
-                    var f = self.filterPort[d.target.port];
-                    return ((!(f && !f.flag)) &&
+                    var fS = self.filterPort[d.source.port];
+                    var fT = self.filterPort[d.target.port];
+                    return ((!(fT && !fT.flag)) && (!(fS && !fS.flag)) &&
                         (self.dataFilter.indexOf(d.target) > -1 && self.dataFilter.indexOf(d.source) > -1))
                         ? 1 : .25;
                 });
